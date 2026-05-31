@@ -20,7 +20,7 @@ const sendBookingEmail = async (userEmail, userName, eventTitle) => {
             html: `
         <h2>Hi ${userName}!</h2>
         <p>Your booking for the event <strong>${eventTitle}</strong> is successfully confirmed.</p>
-        <p>Thank you for choosing Eventora.</p>
+        <p>Thank you for choosing Evenzo.</p>
       `
         };
         await transporter.sendMail(mailOptions);
@@ -32,9 +32,9 @@ const sendBookingEmail = async (userEmail, userName, eventTitle) => {
 
 const sendOTPEmail = async (userEmail, otp, type) => {
     try {
-        const title = type === 'account_verification' ? 'Verify your Eventora Account' : 'Eventora Booking Verification';
+        const title = type === 'account_verification' ? 'Verify your Evenzo Account' : 'Evenzo Booking Verification';
         const msg = type === 'account_verification'
-            ? 'Please use the following OTP to verify your new Eventora account.'
+            ? 'Please use the following OTP to verify your new Evenzo account.'
             : 'Please use the following OTP to verify and confirm your event booking.';
 
         const mailOptions = {
@@ -59,4 +59,60 @@ const sendOTPEmail = async (userEmail, otp, type) => {
     }
 };
 
-module.exports = { sendBookingEmail, sendOTPEmail };
+const sendTicketEmail = async (userEmail, userName, eventTitle, pdfBuffer) => {
+    try {
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: userEmail,
+            subject: `Your Ticket: ${eventTitle} — Evenzo`,
+            html: `
+                <div style="font-family: Arial, sans-serif; padding: 20px; text-align: center;">
+                    <h2 style="color: #6C3CE1;">Your Ticket is Ready! 🎉</h2>
+                    <p>Hi <strong>${userName}</strong>,</p>
+                    <p>Your booking for <strong>${eventTitle}</strong> has been confirmed.</p>
+                    <p>Please find your e-ticket attached as a PDF. Present the QR code at the venue entrance for check-in.</p>
+                    <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
+                    <p style="color: #999; font-size: 12px;">This is an automated email from Evenzo. Please do not reply.</p>
+                </div>
+            `,
+            attachments: [
+                {
+                    filename: `evenzo-ticket-${eventTitle.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}.pdf`,
+                    content: pdfBuffer,
+                    contentType: 'application/pdf'
+                }
+            ]
+        };
+        await transporter.sendMail(mailOptions);
+        console.log(`Ticket email sent to ${userEmail} for ${eventTitle}`);
+    } catch (error) {
+        console.error('Error sending ticket email:', error);
+    }
+};
+
+const sendWaitlistPromotionEmail = async (userEmail, userName, eventTitle) => {
+    try {
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: userEmail,
+            subject: `You're off the waitlist! 🎉 - ${eventTitle}`,
+            html: `
+                <div style="font-family: Arial, sans-serif; padding: 20px; text-align: center;">
+                    <h2 style="color: #6C3CE1;">Great news!</h2>
+                    <p>Hi <strong>${userName}</strong>,</p>
+                    <p>A spot just opened up for <strong>${eventTitle}</strong> and you're next in line!</p>
+                    <p>Your booking has been automatically promoted. The seat is reserved for you for the next <strong>10 minutes</strong>.</p>
+                    <p>Please log in or contact the administrator to finalize your payment and confirm your booking before the timer expires.</p>
+                    <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
+                    <p style="color: #999; font-size: 12px;">This is an automated email from Evenzo. Please do not reply.</p>
+                </div>
+            `
+        };
+        await transporter.sendMail(mailOptions);
+        console.log(`Waitlist promotion email sent to ${userEmail} for ${eventTitle}`);
+    } catch (error) {
+        console.error('Error sending waitlist promotion email:', error);
+    }
+};
+
+module.exports = { sendBookingEmail, sendOTPEmail, sendTicketEmail, sendWaitlistPromotionEmail };

@@ -8,16 +8,16 @@ const Booking = require('./models/Booking');
 dotenv.config();
 
 const users = [
-    { name: 'Admin User', email: 'admin@eventora.com', password: 'password123', role: 'admin' },
-    { name: 'Demo User', email: 'user@eventora.com', password: 'password123', role: 'user' },
-    { name: 'Alice Smith', email: 'alice@eventora.com', password: 'password123', role: 'user' },
-    { name: 'Bob Johnson', email: 'bob@eventora.com', password: 'password123', role: 'user' },
-    { name: 'Charlie Dave', email: 'charlie@eventora.com', password: 'password123', role: 'user' },
-    { name: 'Diana Prince', email: 'diana@eventora.com', password: 'password123', role: 'user' },
-    { name: 'Ethan Hunt', email: 'ethan@eventora.com', password: 'password123', role: 'user' },
-    { name: 'Fiona Gallagher', email: 'fiona@eventora.com', password: 'password123', role: 'user' },
-    { name: 'George Miller', email: 'george@eventora.com', password: 'password123', role: 'user' },
-    { name: 'Hannah Montana', email: 'hannah@eventora.com', password: 'password123', role: 'user' }
+    { name: 'Admin User', email: 'admin@evenzo.com', password: 'password123', role: 'admin' },
+    { name: 'Demo User', email: 'user@evenzo.com', password: 'password123', role: 'user' },
+    { name: 'Alice Smith', email: 'alice@evenzo.com', password: 'password123', role: 'user' },
+    { name: 'Bob Johnson', email: 'bob@evenzo.com', password: 'password123', role: 'user' },
+    { name: 'Charlie Dave', email: 'charlie@evenzo.com', password: 'password123', role: 'user' },
+    { name: 'Diana Prince', email: 'diana@evenzo.com', password: 'password123', role: 'user' },
+    { name: 'Ethan Hunt', email: 'ethan@evenzo.com', password: 'password123', role: 'user' },
+    { name: 'Fiona Gallagher', email: 'fiona@evenzo.com', password: 'password123', role: 'user' },
+    { name: 'George Miller', email: 'george@evenzo.com', password: 'password123', role: 'user' },
+    { name: 'Hannah Montana', email: 'hannah@evenzo.com', password: 'password123', role: 'user' }
 ];
 
 const events = [
@@ -85,7 +85,7 @@ const events = [
 
 const seedDatabase = async () => {
     try {
-        await mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/eventora');
+        await mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/evenzo');
         console.log('\n✅ MongoDB connection open...');
 
         await User.deleteMany();
@@ -160,8 +160,8 @@ const seedDatabase = async () => {
 
         console.log('\n🚀 Database seeded successfully!');
         console.log('-------------------------------------------');
-        console.log('Admin Email: admin@eventora.com');
-        console.log('User Email:  user@eventora.com');
+        console.log('Admin Email: admin@evenzo.com');
+        console.log('User Email:  user@evenzo.com');
         console.log('Password for all users: password123');
         console.log('-------------------------------------------\n');
 

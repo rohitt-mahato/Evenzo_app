@@ -2,12 +2,19 @@ import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import api from '../utils/axios';
 import { useNavigate } from 'react-router-dom';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell, CartesianGrid } from 'recharts';
 
 const AdminDashboard = () => {
     const { user } = useContext(AuthContext);
     const navigate = useNavigate();
     const [events, setEvents] = useState([]);
     const [bookings, setBookings] = useState([]);
+    const [analytics, setAnalytics] = useState({
+        revenue: [],
+        peakHours: [],
+        categories: [],
+        cancellations: { cancellationRate: 0 }
+    });
     const [loading, setLoading] = useState(true);
 
     const [showEventForm, setShowEventForm] = useState(false);
@@ -25,12 +32,22 @@ const AdminDashboard = () => {
 
     const fetchData = async () => {
         try {
-            const [eventsRes, bookingsRes] = await Promise.all([
+            const [eventsRes, bookingsRes, revRes, peakRes, catRes, cancRes] = await Promise.all([
                 api.get('/events'),
-                api.get('/bookings/my') // Admin gets all bookings
+                api.get('/bookings/my'),
+                api.get('/analytics/revenue'),
+                api.get('/analytics/peak-hours'),
+                api.get('/analytics/categories'),
+                api.get('/analytics/cancellations')
             ]);
             setEvents(eventsRes.data);
             setBookings(bookingsRes.data);
+            setAnalytics({
+                revenue: revRes.data,
+                peakHours: peakRes.data,
+                categories: catRes.data,
+                cancellations: cancRes.data
+            });
         } catch (error) {
             console.error('Error fetching admin data', error);
         } finally {
@@ -120,6 +137,83 @@ const AdminDashboard = () => {
                         <h3 className="text-3xl font-black text-yellow-600">{bookings.filter(b => b.status === 'pending').length}</h3>
                     </div>
                     <div className="w-12 h-12 bg-yellow-100 text-yellow-600 rounded-full flex items-center justify-center text-xl font-bold">⏳</div>
+                </div>
+            </div>
+
+            {/* Analytics Charts */}
+            <div className="mb-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-2xl font-bold text-gray-800">Analytics Overview</h2>
+                    <div className="text-sm font-semibold bg-red-50 text-red-600 px-3 py-1 rounded-full border border-red-100">
+                        Cancellation Rate: {analytics.cancellations.cancellationRate.toFixed(1)}%
+                    </div>
+                </div>
+                
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    {/* Revenue Bar Chart */}
+                    <div className="h-72">
+                        <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-4 text-center">Revenue Over Time (₹)</h3>
+                        {analytics.revenue.length > 0 ? (
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={analytics.revenue}>
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eee" />
+                                    <XAxis dataKey="_id" tick={{fontSize: 12}} />
+                                    <YAxis tick={{fontSize: 12}} />
+                                    <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} cursor={{fill: '#f8fafc'}} />
+                                    <Bar dataKey="totalRevenue" fill="#22c55e" radius={[4, 4, 0, 0]} />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        ) : (
+                            <div className="h-full flex items-center justify-center text-gray-400">No revenue data yet.</div>
+                        )}
+                    </div>
+
+                    {/* Peak Hours Line Chart */}
+                    <div className="h-72">
+                        <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-4 text-center">Peak Booking Hours</h3>
+                        {analytics.peakHours.length > 0 ? (
+                            <ResponsiveContainer width="100%" height="100%">
+                                <LineChart data={analytics.peakHours}>
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eee" />
+                                    <XAxis dataKey="hour" tick={{fontSize: 12}} />
+                                    <YAxis tick={{fontSize: 12}} />
+                                    <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
+                                    <Line type="monotone" dataKey="count" stroke="#6366f1" strokeWidth={3} dot={{r: 4}} activeDot={{r: 6}} />
+                                </LineChart>
+                            </ResponsiveContainer>
+                        ) : (
+                            <div className="h-full flex items-center justify-center text-gray-400">No booking time data yet.</div>
+                        )}
+                    </div>
+
+                    {/* Category Pie Chart */}
+                    <div className="h-72 lg:col-span-2 flex flex-col items-center">
+                        <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-4 text-center">Bookings by Category</h3>
+                        {analytics.categories.length > 0 ? (
+                            <div className="h-full w-full max-w-md">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <PieChart>
+                                        <Pie 
+                                            data={analytics.categories} 
+                                            dataKey="count" 
+                                            nameKey="category" 
+                                            cx="50%" 
+                                            cy="50%" 
+                                            outerRadius={80} 
+                                            label={({category, percent}) => `${category} (${(percent * 100).toFixed(0)}%)`}
+                                        >
+                                            {analytics.categories.map((entry, index) => (
+                                                <Cell key={`cell-${index}`} fill={['#3b82f6', '#ec4899', '#f59e0b', '#10b981', '#8b5cf6'][index % 5]} />
+                                            ))}
+                                        </Pie>
+                                        <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
+                                    </PieChart>
+                                </ResponsiveContainer>
+                            </div>
+                        ) : (
+                            <div className="h-full flex items-center justify-center text-gray-400">No category data yet.</div>
+                        )}
+                    </div>
                 </div>
             </div>
 

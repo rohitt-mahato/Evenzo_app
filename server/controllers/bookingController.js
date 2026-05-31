@@ -1,7 +1,12 @@
 const Booking = require('../models/Booking');
 const Event = require('../models/Event');
 const OTP = require('../models/OTP');
-const { sendBookingEmail, sendOTPEmail } = require('../utils/email');
+const QRCode = require('qrcode');
+const { sendBookingEmail, sendOTPEmail, sendTicketEmail } = require('../utils/email');
+const { generateTicketToken, generateTicketPDF } = require('../utils/ticket');
+const { getIO } = require('../utils/socket');
+const { lockSeat, clearLock, handleSeatAvailable } = require('../utils/seatLock');
+const { joinWaitlist } = require('../utils/waitlist');
 
 const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
 
@@ -29,24 +34,63 @@ exports.bookEvent = async (req, res) => {
 
         const event = await Event.findById(eventId);
         if (!event) return res.status(404).json({ message: 'Event not found' });
-        if (event.availableSeats <= 0) return res.status(400).json({ message: 'No seats available' });
 
         const existingBooking = await Booking.findOne({ userId: req.user.id, eventId });
         if (existingBooking && existingBooking.status !== 'cancelled') {
-            return res.status(400).json({ message: 'Already booked or pending' });
+            return res.status(400).json({ message: 'Already booked, pending, or waitlisted' });
         }
+
+        // Waitlist logic if no seats available
+        if (event.availableSeats <= 0) {
+            const booking = await Booking.create({
+                userId: req.user.id,
+                eventId,
+                status: 'waitlisted',
+                paymentStatus: 'not_paid',
+                amount: event.ticketPrice
+            });
+            await OTP.deleteOne({ _id: validOTP._id });
+
+            // Join Redis waitlist
+            await joinWaitlist(eventId, req.user.id);
+
+            return res.status(201).json({ message: 'Event is full — you have been added to the waitlist', booking });
+        }
+
+        // Immediately lock the seat (decrement availableSeats to prevent overselling)
+        event.availableSeats -= 1;
+        await event.save();
 
         const booking = await Booking.create({
             userId: req.user.id,
             eventId,
             status: 'pending',
             paymentStatus: 'not_paid',
-            amount: event.ticketPrice
+            amount: event.ticketPrice,
+            seatLockedAt: new Date()
         });
 
         await OTP.deleteOne({ _id: validOTP._id }); // cleanup
 
-        res.status(201).json({ message: 'Booking request submitted', booking });
+        // Start 10-minute auto-release timer
+        lockSeat(booking._id, eventId);
+
+        // Emit seat:locked to event room
+        try {
+            const io = getIO();
+            io.to(`event:${eventId}`).emit('seat:locked', {
+                eventId: eventId.toString(),
+                bookingId: booking._id.toString(),
+                availableSeats: event.availableSeats,
+                lockedBy: req.user.id,
+                expiresAt: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
+                message: 'A seat has been locked for checkout'
+            });
+        } catch (socketErr) {
+            console.error('[Booking] Socket emit error:', socketErr.message);
+        }
+
+        res.status(201).json({ message: 'Booking request submitted — seat locked for 10 minutes', booking });
     } catch (error) {
         res.status(500).json({ message: 'Server Error', error: error.message });
     }
@@ -59,25 +103,59 @@ exports.confirmBooking = async (req, res) => {
         if (!booking) return res.status(404).json({ message: 'Booking not found' });
 
         if (booking.status === 'confirmed') return res.status(400).json({ message: 'Booking is already confirmed' });
-
-        const event = await Event.findById(booking.eventId._id);
-        if (event.availableSeats <= 0) {
-            return res.status(400).json({ message: 'No seats available to confirm this booking' });
-        }
+        if (booking.status === 'cancelled') return res.status(400).json({ message: 'Cannot confirm a cancelled booking' });
 
         booking.status = 'confirmed';
         if (paymentStatus) {
             booking.paymentStatus = paymentStatus;
         }
+
+        // Clear the seat lock timer (seat stays deducted permanently now)
+        clearLock(booking._id);
+        booking.seatLockedAt = null;
+
+        // Generate QR ticket
+        const token = generateTicketToken();
+        booking.ticketToken = token;
         await booking.save();
 
-        event.availableSeats -= 1;
-        await event.save();
+        // Generate QR code and PDF ticket
+        const qrDataURL = await QRCode.toDataURL(token, { width: 300, margin: 1 });
+        const pdfBuffer = await generateTicketPDF({
+            eventTitle: booking.eventId.title,
+            eventDate: booking.eventId.date,
+            eventLocation: booking.eventId.location,
+            userName: booking.userId.name,
+            userEmail: booking.userId.email,
+            ticketToken: token,
+            qrDataURL
+        });
 
-        // Send email on admin confirmation
-        await sendBookingEmail(booking.userId.email, booking.userId.name, booking.eventId.title);
+        // Email the ticket PDF
+        await sendTicketEmail(
+            booking.userId.email,
+            booking.userId.name,
+            booking.eventId.title,
+            pdfBuffer
+        );
 
-        res.json({ message: 'Booking confirmed successfully', booking });
+        // Emit booking:confirmed to admin room
+        try {
+            const io = getIO();
+            io.to('admin').emit('booking:confirmed', {
+                bookingId: booking._id.toString(),
+                eventId: booking.eventId._id.toString(),
+                eventTitle: booking.eventId.title,
+                userName: booking.userId.name,
+                userEmail: booking.userId.email,
+                confirmedAt: new Date().toISOString(),
+                message: `Booking confirmed for ${booking.userId.name}`
+            });
+        } catch (socketErr) {
+            console.error('[Booking] Socket emit error:', socketErr.message);
+        }
+
+        res.json({ message: 'Booking confirmed — ticket emailed', booking });
     } catch (error) {
         res.status(500).json({ message: 'Server Error', error: error.message });
     }
@@ -104,17 +182,23 @@ exports.cancelBooking = async (req, res) => {
         if (booking.status === 'cancelled') return res.status(400).json({ message: 'Already cancelled' });
 
         const wasConfirmed = booking.status === 'confirmed';
+        const wasPending = booking.status === 'pending';
+
+        // Clear any active seat lock timer
+        clearLock(booking._id);
 
         booking.status = 'cancelled';
+        booking.seatLockedAt = null;
         await booking.save();
 
-        // Only restore the seat if it was actually confirmed and deducted
-        if (wasConfirmed) {
-            const event = await Event.findById(booking.eventId);
-            if (event) {
-                event.availableSeats += 1;
-                await event.save();
-            }
+        // Restore seat and handle waitlist promotion if it was confirmed OR pending
+        if (wasConfirmed || wasPending) {
+            await handleSeatAvailable(
+                booking.eventId.toString(), 
+                booking._id.toString(), 
+                wasPending ? 'user_cancelled_pending' : 'booking_cancelled',
+                'A seat has been released'
+            );
         }
 
         res.json({ message: 'Booking cancelled successfully' });
