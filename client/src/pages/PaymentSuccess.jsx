@@ -1,22 +1,49 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FaCheckCircle } from 'react-icons/fa';
 
 const PaymentSuccess = () => {
     return (
-        <div className="min-h-[70vh] flex flex-col items-center justify-center p-4">
-            <div className="bg-white p-10 rounded-3xl shadow-2xl max-w-md w-full text-center border-t-8 border-green-500 transform transition-all hover:-translate-y-1">
-                <FaCheckCircle className="text-green-500 text-7xl mx-auto mb-6 drop-shadow-sm" />
-                <h1 className="text-4xl font-black text-gray-900 mb-4">Booking Confirmed!</h1>
-                <p className="text-gray-500 mb-8 text-lg">Your ticket has been booked successfully. A confirmation email has been sent to your registered email address.</p>
-                <div className="space-y-4">
-                    <Link to="/dashboard" className="block w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-6 rounded-xl transition shadow-lg hover:shadow-xl">
-                        View My Tickets
-                    </Link>
-                    <Link to="/" className="block w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-4 px-6 rounded-xl transition">
-                        Discover More Events
-                    </Link>
-                </div>
+        <div className="bg-background text-on-background min-h-[calc(100vh-80px)] flex flex-col items-center justify-center py-xl px-md">
+            {/* Success Header */}
+            <div className="text-center mb-xl max-w-2xl mx-auto flex flex-col items-center">
+                <span className="material-symbols-outlined text-[64px] text-[#10B981] mb-md" style={{ fontVariationSettings: "'FILL' 1" }}>hourglass_top</span>
+                <h1 className="font-display text-display text-primary mb-sm">Booking Request Sent!</h1>
+                <p className="font-body-lg text-body-lg text-on-surface-variant">Your ticket request has been submitted and is awaiting admin confirmation.</p>
+            </div>
+
+            {/* Next Steps */}
+            <div className="w-full max-w-[480px] bg-surface-container-lowest border border-outline-variant rounded-DEFAULT p-lg mb-xl shadow-sm">
+                <h3 className="font-headline-sm text-headline-sm text-primary mb-md">Next Steps</h3>
+                <ul className="flex flex-col gap-md">
+                    <li className="flex items-start gap-md">
+                        <div className="mt-xs bg-surface-container-low p-xs rounded-full text-on-surface-variant">
+                            <span className="material-symbols-outlined text-[20px]">admin_panel_settings</span>
+                        </div>
+                        <div>
+                            <p className="font-label-md text-label-md text-primary">Awaiting Confirmation</p>
+                            <p className="font-body-sm text-body-sm text-on-surface-variant mt-xs">An admin will review and confirm your booking shortly.</p>
+                        </div>
+                    </li>
+                    <li className="flex items-start gap-md">
+                        <div className="mt-xs bg-surface-container-low p-xs rounded-full text-on-surface-variant">
+                            <span className="material-symbols-outlined text-[20px]">mail</span>
+                        </div>
+                        <div>
+                            <p className="font-label-md text-label-md text-primary">Ticket Delivery</p>
+                            <p className="font-body-sm text-body-sm text-on-surface-variant mt-xs">Once confirmed, you'll receive your digital ticket (PDF) via email.</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-md w-full max-w-[480px]">
+                <Link to="/dashboard" className="flex-1 text-center bg-primary-container text-on-primary font-label-md text-label-md py-sm px-md rounded-DEFAULT hover:opacity-90 transition-opacity shadow-sm">
+                    View My Tickets
+                </Link>
+                <Link to="/" className="flex-1 text-center border border-outline-variant text-primary font-label-md text-label-md py-sm px-md rounded-DEFAULT hover:bg-surface-container-low transition-colors">
+                    Discover More Events
+                </Link>
             </div>
         </div>
     );

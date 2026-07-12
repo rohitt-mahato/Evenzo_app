@@ -280,7 +280,7 @@ sequenceDiagram
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/yourusername/Evenzo-MERN.git
+git clone https://github.com/rohitt-mahato/Evenzo.git
 cd Evenzo-MERN
 
 # 2. Install all dependencies (client + server)
@@ -489,16 +489,15 @@ Evenzo-MERN/
 
 ## 📸 Screenshots
 
-> [!NOTE]
-> Replace placeholder URLs below with actual screenshots of your deployed application.
+*(Add screenshots of your application here once deployed)*
 
 | View | Preview |
 | :---: | :---: |
-| **Home — Event Listing** | ![Home Page](https://via.placeholder.com/700x400/1a1a2e/e94560?text=Home+%E2%80%94+Event+Listing) |
-| **Event Detail + Booking** | ![Event Detail](https://via.placeholder.com/700x400/16213e/0f3460?text=Event+Detail+%2B+Booking+Flow) |
-| **User Dashboard** | ![User Dashboard](https://via.placeholder.com/700x400/0a1128/e94560?text=User+Dashboard+%2B+QR+Tickets) |
-| **Admin Analytics** | ![Analytics](https://via.placeholder.com/700x400/1a1a2e/53d8fb?text=Admin+Analytics+Dashboard) |
-| **OTP Verification** | ![OTP Flow](https://via.placeholder.com/700x400/16213e/e94560?text=2FA+OTP+Verification) |
+| **Home — Event Listing** | [Add Image] |
+| **Event Detail + Booking** | [Add Image] |
+| **User Dashboard** | [Add Image] |
+| **Admin Analytics** | [Add Image] |
+| **OTP Verification** | [Add Image] |
 
 ---
 
@@ -729,9 +728,8 @@ Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for more informa
 
 **Rohit Mahato**
 
-[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/yourusername)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/yourprofile)
-[![Portfolio](https://img.shields.io/badge/Portfolio-FF5722?style=for-the-badge&logo=google-chrome&logoColor=white)](https://yourwebsite.com)
+[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Rohit-Mahato)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/rohit-mahato)
 
 ---
 

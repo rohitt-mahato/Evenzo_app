@@ -3,10 +3,12 @@ const http = require('http');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const path = require('path');
 
 dotenv.config();
 
 const authRoutes = require('./routes/auth');
+const userRoutes = require('./routes/users');
 const eventRoutes = require('./routes/events');
 const bookingRoutes = require('./routes/bookings');
 const ticketRoutes = require('./routes/tickets');
@@ -24,9 +26,11 @@ initSocket(server);
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/tickets', ticketRoutes);

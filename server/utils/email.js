@@ -115,4 +115,26 @@ const sendWaitlistPromotionEmail = async (userEmail, userName, eventTitle) => {
     }
 };
 
-module.exports = { sendBookingEmail, sendOTPEmail, sendTicketEmail, sendWaitlistPromotionEmail };
+const sendPasswordResetEmail = async (userEmail, resetUrl) => {
+    try {
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: userEmail,
+            subject: `Password Reset Request — Evenzo`,
+            html: `
+                <div style="font-family: Arial, sans-serif; padding: 20px; text-align: center;">
+                    <h2 style="color: #6C3CE1;">Password Reset</h2>
+                    <p>You requested a password reset. Please click the link below to set a new password.</p>
+                    <a href="${resetUrl}" style="display: inline-block; padding: 10px 20px; background-color: #6C3CE1; color: #fff; text-decoration: none; border-radius: 5px; margin-top: 15px;">Reset Password</a>
+                    <p style="margin-top: 20px; color: #555;">If you did not request this, please ignore this email.</p>
+                </div>
+            `
+        };
+        await transporter.sendMail(mailOptions);
+        console.log(`Password reset email sent to ${userEmail}`);
+    } catch (error) {
+        console.error('Error sending password reset email:', error);
+    }
+};
+
+module.exports = { sendBookingEmail, sendOTPEmail, sendTicketEmail, sendWaitlistPromotionEmail, sendPasswordResetEmail };

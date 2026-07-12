@@ -4,7 +4,14 @@ exports.getEvents = async (req, res) => {
     try {
         const filters = {};
         if (req.query.category) filters.category = req.query.category;
-        if (req.query.search) filters.title = { $regex: req.query.search, $options: 'i' };
+        
+        if (req.query.search) {
+            filters.$or = [
+                { title: { $regex: req.query.search, $options: 'i' } },
+                { location: { $regex: req.query.search, $options: 'i' } },
+                { category: { $regex: req.query.search, $options: 'i' } }
+            ];
+        }
 
         const events = await Event.find(filters).populate('createdBy', 'name email');
         res.json(events);

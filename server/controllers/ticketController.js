@@ -4,7 +4,7 @@ const Booking = require('../models/Booking');
  * Verify a ticket at the event gate
  * POST /api/tickets/verify
  * Body: { token: string }
- * 
+ 
  * Checks the ticket token against the database, validates booking status,
  * and prevents ticket reuse by marking it as used on first scan.
  */
@@ -21,21 +21,21 @@ exports.verifyTicket = async (req, res) => {
             .populate('userId', 'name email');
 
         if (!booking) {
-            return res.status(404).json({ 
+            return res.status(404).json({
                 valid: false,
-                message: 'Invalid ticket — no booking found for this token' 
+                message: 'Invalid ticket — no booking found for this token'
             });
         }
 
         if (booking.status !== 'confirmed') {
-            return res.status(400).json({ 
+            return res.status(400).json({
                 valid: false,
-                message: `Ticket cannot be used — booking status is "${booking.status}"` 
+                message: `Ticket cannot be used — booking status is "${booking.status}"`
             });
         }
 
         if (booking.ticketUsed) {
-            return res.status(400).json({ 
+            return res.status(400).json({
                 valid: false,
                 message: 'Ticket has already been used',
                 usedAt: booking.ticketUsedAt

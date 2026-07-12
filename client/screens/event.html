@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Electronic Beats Festival 2024 - GoPlan</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-background": "#181c1e",
+                        "on-secondary": "#ffffff",
+                        "inverse-on-surface": "#eef1f3",
+                        "on-primary-fixed-variant": "#414754",
+                        "on-primary": "#ffffff",
+                        "on-surface": "#181c1e",
+                        "surface-bright": "#f7fafc",
+                        "on-secondary-container": "#586377",
+                        "surface-container-high": "#e5e9eb",
+                        "on-tertiary-fixed-variant": "#524531",
+                        "surface-tint": "#585e6c",
+                        "on-primary-container": "#828796",
+                        "inverse-surface": "#2d3133",
+                        "outline": "#76777c",
+                        "secondary-fixed": "#d8e3fa",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed": "#f5dfc4",
+                        "primary-fixed": "#dde2f3",
+                        "surface-container-low": "#f1f4f6",
+                        "on-secondary-fixed-variant": "#3c475a",
+                        "on-tertiary-container": "#96856d",
+                        "on-surface-variant": "#45474c",
+                        "error-container": "#ffdad6",
+                        "inverse-primary": "#c1c6d7",
+                        "tertiary": "#0e0700",
+                        "on-tertiary-fixed": "#241a09",
+                        "surface-variant": "#e0e3e5",
+                        "on-tertiary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed-dim": "#bcc7dd",
+                        "secondary": "#545f72",
+                        "surface-container": "#ebeef0",
+                        "on-primary-fixed": "#161c27",
+                        "primary-container": "#1a202c",
+                        "background": "#f7fafc",
+                        "surface": "#f7fafc",
+                        "on-secondary-fixed": "#111c2c",
+                        "tertiary-fixed-dim": "#d8c3a9",
+                        "surface-dim": "#d7dadc",
+                        "tertiary-container": "#291e0d",
+                        "primary-fixed-dim": "#c1c6d7",
+                        "outline-variant": "#c6c6cc",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-container": "#d5e0f7",
+                        "primary": "#030813",
+                        "surface-container-highest": "#e0e3e5"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sm": "8px",
+                        "xl": "40px",
+                        "container-max": "1280px",
+                        "xs": "4px",
+                        "md": "16px",
+                        "base": "4px",
+                        "lg": "24px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "display": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "body-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "display": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-background text-on-background antialiased min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<nav class="bg-surface-container-lowest border-b border-outline-variant sticky top-0 z-50 flex justify-between items-center px-lg py-md w-full max-w-container-max mx-auto transition-colors duration-200 ease-in-out">
+<div class="flex items-center gap-lg">
+<a class="text-headline-md font-headline-md font-bold text-primary" href="#">GoPlan</a>
+<!-- Desktop Nav -->
+<div class="hidden md:flex gap-md items-center">
+<a class="text-on-surface-variant hover:bg-surface-container-low hover:text-primary px-3 py-2 rounded-DEFAULT font-label-md text-label-md transition-colors duration-200 ease-in-out" href="#">Browse</a>
+<a class="text-on-surface-variant hover:bg-surface-container-low hover:text-primary px-3 py-2 rounded-DEFAULT font-label-md text-label-md transition-colors duration-200 ease-in-out" href="#">My Tickets</a>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<div class="relative hidden md:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" style="font-size: 20px;">search</span>
+<input class="pl-10 pr-4 py-2 border border-outline-variant rounded-DEFAULT focus:border-primary focus:ring-0 bg-surface-container-lowest text-body-md font-body-md w-64 transition-colors duration-200" placeholder="Search events..." type="text"/>
+</div>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low hover:text-primary rounded-full transition-colors duration-200 ease-in-out">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="border border-outline-variant px-4 py-2 rounded-DEFAULT font-label-md text-label-md hover:bg-surface-container-low transition-colors duration-200 ease-in-out">Sign In</button>
+<img alt="User profile" class="w-10 h-10 rounded-full border border-outline-variant object-cover ml-2" data-alt="A professional headshot of a young man with short dark hair, wearing a casual light blue button-down shirt. The background is a plain, light grey studio setting. The lighting is soft and even, highlighting his features clearly. The mood is approachable and professional, fitting for a user profile avatar in a clean, modern UI context." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxwOYwpbJYvmSEiXDvxwgALh6aMWp94lIXMifBD_GI3KDhzVpHqNYIUemFWTnGLyOpn0zSstJhk4QnKcQOCfou1kTgJXb4bd8xG2AJwnQ8paLq4NLGrMPf1n1mjyCOdUnZpero4f8qg2BZO7q92TKtP86kTHYb9NXB_SC6jJ_ap2T_Kqvgd9nyYQDE4ROvfwGmwbOq8dFFqcJ81o4tLq5KTeDr2sYLf1t4E41xgtTgulu9nj89etrh_KEwiLFqOVbgtlQReYjn3Csd"/>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-grow w-full max-w-container-max mx-auto px-md md:px-lg py-xl">
+<!-- Hero Banner -->
+<div class="w-full h-64 md:h-96 bg-surface-container-low rounded-xl overflow-hidden relative border border-outline-variant mb-xl">
+<img alt="Electronic Beats Festival Banner" class="w-full h-full object-cover" data-alt="A wide, panoramic shot of a massive electronic music festival stage at night. Bright, vibrant laser lights in electric blue, neon pink, and vivid green shoot across the crowd and the dark sky. The silhouette of a DJ is visible in the center of an elaborate, geometric stage setup. Thousands of attendees are visible in the foreground, hands raised, bathed in the energetic light. The scene captures the high-energy, immersive atmosphere of a premier music event." src="https://lh3.googleusercontent.com/aida-public/AB6AXuALOawLSbYIlvQGbYfMj3wjrgZWsjrCniEu76I79csD0ZC2t_NRlj_FOZ60uyCtc9r7IG_JaP6cdM9ZwJR5BmgxnNJQLDIUVLc5fQyCQSwHf2egTWzGg7LieF3onN7iuL5DG6iwuA-hmpOWgbY-91Mjsxfv10ZQ9kjDD1kvRIdCnacY7XirDtuBKsRQF7WLOCTlWtqs7V8eClvVUm--bQ-qofrQniGgriUvoGftPu6csLJd7XnqBxuqPfG-U2ij_7J1CMpqhBOQ9Qlb"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary-container/80 to-transparent flex items-end p-lg">
+<div class="text-on-primary">
+<span class="inline-block bg-surface-container-lowest text-on-surface px-3 py-1 rounded-DEFAULT font-label-sm text-label-sm mb-sm uppercase tracking-wider">Music</span>
+<h1 class="font-display text-display md:text-display text-on-primary mb-sm">Electronic Beats Festival 2024</h1>
+<div class="flex items-center gap-sm font-body-md text-body-md opacity-90">
+<span class="material-symbols-outlined" style="font-size: 20px;">calendar_month</span>
+<span>August 15-17, 2024</span>
+<span class="mx-2">•</span>
+<span class="material-symbols-outlined" style="font-size: 20px;">location_on</span>
+<span>Berlin, Germany</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Two Column Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-xl relative items-start">
+<!-- Left Column: Details -->
+<div class="lg:col-span-8 flex flex-col gap-lg">
+<!-- Organizer Info -->
+<div class="flex items-center justify-between p-lg bg-surface-container-lowest border border-outline-variant rounded-xl">
+<div class="flex items-center gap-md">
+<img alt="Organizer Logo" class="w-12 h-12 rounded-full border border-outline-variant object-cover" data-alt="A clean, minimalist logo featuring abstract sound waves forming a dynamic, circular shape. The colors are deep navy and sleek silver, set against a pristine white background. The aesthetic is modern, reflecting a professional music event production company within a light-mode UI context." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMEuxMga-Z1sDV14hDojfzOljuim0vQskPeR8tFwyQ-yN6rQLqPWzlukK3XrCf0JoAABrwJE9hfNBK4v8JU1mCndVEWopAcl6dNG7vqnQ0XPTwWuKitlSHssLLxcpzMEThplA9VFlSAOOInyqbt2fBt5F02nYz-hxG1B6GKOiY1TroCyiHNkf2hEYSY4oq1GpbpTx_4HXzOXNL-wl3gzfUgAsWfyWEuZU2yShXTkR2ZIPXb-gA3uTCTJBxh-XjFuDl-l_2J64KzMx0"/>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Organized By</p>
+<p class="font-headline-sm text-headline-sm text-on-surface">Sonic Canvas Productions</p>
+</div>
+</div>
+<button class="border border-outline-variant px-4 py-2 rounded-DEFAULT font-label-md text-label-md hover:bg-surface-container-low transition-colors text-on-surface">Follow</button>
+</div>
+<!-- Description -->
+<section class="bg-surface-container-lowest border border-outline-variant p-lg rounded-xl">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-md">About the Event</h2>
+<div class="font-body-md text-body-md text-on-surface-variant space-y-4">
+<p>Prepare for a three-day journey into the cutting edge of electronic music. The Electronic Beats Festival returns for its 10th anniversary, bringing together the world's most innovative DJs, producers, and visual artists for an unforgettable weekend.</p>
+<p>Set in a newly renovated industrial complex, the festival features three distinct stages, each with its own unique sonic and visual identity. From deep techno in the concrete bunker to melodic house in the open-air pavilion, expect world-class sound design and immersive installations.</p>
+</div>
+</section>
+<!-- Lineup -->
+<section class="bg-surface-container-lowest border border-outline-variant p-lg rounded-xl">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-md">Lineup highlights</h2>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-sm">
+<div class="p-sm bg-surface-container-low rounded-DEFAULT border border-outline-variant text-center">
+<p class="font-label-md text-label-md text-on-surface">Amelie Lens</p>
+</div>
+<div class="p-sm bg-surface-container-low rounded-DEFAULT border border-outline-variant text-center">
+<p class="font-label-md text-label-md text-on-surface">Bicep</p>
+</div>
+<div class="p-sm bg-surface-container-low rounded-DEFAULT border border-outline-variant text-center">
+<p class="font-label-md text-label-md text-on-surface">Charlotte de Witte</p>
+</div>
+<div class="p-sm bg-surface-container-low rounded-DEFAULT border border-outline-variant text-center">
+<p class="font-label-md text-label-md text-on-surface">Four Tet</p>
+</div>
+<div class="p-sm bg-surface-container-low rounded-DEFAULT border border-outline-variant text-center">
+<p class="font-label-md text-label-md text-on-surface">Peggy Gou</p>
+</div>
+<div class="p-sm bg-surface-container-low rounded-DEFAULT border border-outline-variant text-center">
+<p class="font-label-md text-label-md text-on-surface">Tale of Us</p>
+</div>
+<div class="p-sm bg-surface-container-low rounded-DEFAULT border border-outline-variant text-center">
+<p class="font-label-md text-label-md text-on-surface">+ 50 more</p>
+</div>
+</div>
+</section>
+<!-- Venue & Map -->
+<section class="bg-surface-container-lowest border border-outline-variant p-lg rounded-xl">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-md">Venue Location</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-md">Kraftwerk Berlin, Köpenicker Str. 70, 10179 Berlin</p>
+<div class="w-full h-64 bg-surface-container-high rounded-DEFAULT border border-outline-variant relative overflow-hidden" data-location="Berlin" style="">
+<!-- Map Placeholder -->
+<div class="absolute inset-0 flex items-center justify-center text-on-surface-variant flex-col">
+<span class="material-symbols-outlined text-4xl mb-2">map</span>
+<span class="font-label-md text-label-md">Map View (Berlin)</span>
+</div>
+</div>
+</section>
+<!-- Tags -->
+<div class="flex flex-wrap gap-sm">
+<span class="bg-surface-container-high px-3 py-1 rounded-full font-label-sm text-label-sm text-on-surface-variant border border-outline-variant">Electronic</span>
+<span class="bg-surface-container-high px-3 py-1 rounded-full font-label-sm text-label-sm text-on-surface-variant border border-outline-variant">Techno</span>
+<span class="bg-surface-container-high px-3 py-1 rounded-full font-label-sm text-label-sm text-on-surface-variant border border-outline-variant">House</span>
+<span class="bg-surface-container-high px-3 py-1 rounded-full font-label-sm text-label-sm text-on-surface-variant border border-outline-variant">Festival</span>
+<span class="bg-surface-container-high px-3 py-1 rounded-full font-label-sm text-label-sm text-on-surface-variant border border-outline-variant">18+</span>
+</div>
+</div>
+<!-- Right Column: Booking Widget (Sticky) -->
+<div class="lg:col-span-4 lg:sticky lg:top-24">
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-sm">Select Tickets</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-md">Sales end on Aug 14, 2024</p>
+<div class="space-y-md mb-lg">
+<!-- Tier 1 -->
+<div class="border border-outline-variant rounded-DEFAULT p-md hover:border-primary transition-colors cursor-pointer relative ticket-tier" onclick="selectTier(this, 120)">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h4 class="font-label-md text-label-md text-on-surface">General Admission</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Full weekend access</p>
+</div>
+<span class="font-headline-sm text-headline-sm text-on-surface">€120</span>
+</div>
+<p class="font-label-sm text-label-sm text-primary mt-2">Available</p>
+<!-- Radio pseudo-element via JS class toggle -->
+<div class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full border border-outline-variant tier-radio flex items-center justify-center">
+<div class="w-2 h-2 rounded-full bg-primary hidden tier-radio-inner"></div>
+</div>
+</div>
+<!-- Tier 2 -->
+<div class="border border-outline-variant rounded-DEFAULT p-md hover:border-primary transition-colors cursor-pointer relative ticket-tier opacity-50 cursor-not-allowed">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h4 class="font-label-md text-label-md text-on-surface">VIP Experience</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Backstage access, free drinks</p>
+</div>
+<span class="font-headline-sm text-headline-sm text-on-surface">€250</span>
+</div>
+<p class="font-label-sm text-label-sm text-error mt-2">Sold Out</p>
+</div>
+</div>
+<div class="border-t border-outline-variant pt-md mb-lg flex items-center justify-between">
+<span class="font-label-md text-label-md text-on-surface">Quantity</span>
+<div class="flex items-center gap-sm">
+<button class="w-8 h-8 flex items-center justify-center border border-outline-variant rounded-DEFAULT hover:bg-surface-container-low text-on-surface transition-colors" onclick="updateQty(-1)">-</button>
+<span class="font-body-md text-body-md w-8 text-center" id="ticket-qty">1</span>
+<button class="w-8 h-8 flex items-center justify-center border border-outline-variant rounded-DEFAULT hover:bg-surface-container-low text-on-surface transition-colors" onclick="updateQty(1)">+</button>
+</div>
+</div>
+<div class="flex justify-between items-end mb-lg">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Total</span>
+<span class="font-display text-headline-lg text-on-surface" id="total-price">€120</span>
+</div>
+<button class="w-full bg-primary text-on-primary py-3 rounded-DEFAULT font-label-md text-label-md hover:bg-primary-container transition-colors">Book Now</button>
+<p class="text-center font-label-sm text-label-sm text-on-surface-variant mt-sm">Secure checkout powered by GoPlan</p>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest border-t border-outline-variant w-full py-xl px-lg mt-xl flex flex-col md:flex-row justify-between items-center max-w-container-max mx-auto">
+<div class="mb-md md:mb-0 text-center md:text-left">
+<span class="font-headline-sm text-headline-sm font-bold text-primary block mb-xs">GoPlan</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">© 2024 GoPlan Platform. All rights reserved.</span>
+</div>
+<div class="flex flex-wrap justify-center gap-md font-label-sm text-label-sm text-on-surface-variant">
+<a class="hover:text-primary underline transition-all duration-200" href="#">Terms of Service</a>
+<a class="hover:text-primary underline transition-all duration-200" href="#">Privacy Policy</a>
+<a class="hover:text-primary underline transition-all duration-200" href="#">Contact Support</a>
+<a class="hover:text-primary underline transition-all duration-200" href="#">Help Center</a>
+<a class="hover:text-primary underline transition-all duration-200" href="#">Career</a>
+</div>
+</footer>
+<script>
+        let currentPrice = 0;
+        let qty = 1;
+
+        function selectTier(element, price) {
+            // Ignore if sold out (basic check based on opacity class for this demo)
+            if(element.classList.contains('opacity-50')) return;
+
+            // Reset all
+            document.querySelectorAll('.ticket-tier').forEach(t => {
+                t.classList.remove('border-primary');
+                t.classList.add('border-outline-variant');
+                const inner = t.querySelector('.tier-radio-inner');
+                if(inner) inner.classList.add('hidden');
+            });
+
+            // Set active
+            element.classList.remove('border-outline-variant');
+            element.classList.add('border-primary');
+            const inner = element.querySelector('.tier-radio-inner');
+            if(inner) inner.classList.remove('hidden');
+
+            currentPrice = price;
+            updateTotal();
+        }
+
+        function updateQty(change) {
+            if(currentPrice === 0) return; // Must select tier first
+            let newQty = qty + change;
+            if(newQty >= 1 && newQty <= 10) {
+                qty = newQty;
+                document.getElementById('ticket-qty').innerText = qty;
+                updateTotal();
+            }
+        }
+
+        function updateTotal() {
+            document.getElementById('total-price').innerText = `€${currentPrice * qty}`;
+        }
+
+        // Initialize first tier as selected for demo
+        document.addEventListener('DOMContentLoaded', () => {
+            const firstTier = document.querySelector('.ticket-tier:not(.opacity-50)');
+            if(firstTier) {
+                selectTier(firstTier, 120);
+            }
+        });
+    </script>
+</body></html>

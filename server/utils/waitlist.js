@@ -1,15 +1,11 @@
-const redisClient = require('./redis');
+const Booking = require('../models/Booking');
 
 /**
  * Join the waitlist for an event
- * Uses ZADD with the current timestamp as the score (FIFO)
  * @param {string} eventId
  * @param {string} userId
  */
 const joinWaitlist = async (eventId, userId) => {
-    const key = `waitlist:${eventId}`;
-    const score = Date.now();
-    await redisClient.zAdd(key, [{ score, value: userId.toString() }]);
     console.log(`[Waitlist] User ${userId} joined waitlist for event ${eventId}`);
 };
 
@@ -19,25 +15,20 @@ const joinWaitlist = async (eventId, userId) => {
  * @returns {Promise<string|null>} Returns the userId or null if empty
  */
 const peekWaitlist = async (eventId) => {
-    const key = `waitlist:${eventId}`;
-    const result = await redisClient.zRange(key, 0, 0);
-    return result.length > 0 ? result[0] : null;
+    const booking = await Booking.findOne({ eventId, status: 'waitlisted' }).sort({ createdAt: 1 });
+    return booking ? booking.userId.toString() : null;
 };
 
 /**
  * Pop the first user from the waitlist (the one who waited the longest)
- * Uses ZPOPMIN
  * @param {string} eventId
  * @returns {Promise<string|null>} Returns the userId or null if empty
  */
 const popWaitlist = async (eventId) => {
-    const key = `waitlist:${eventId}`;
-    const result = await redisClient.zPopMin(key, 1);
-    // result format: { value: 'userId', score: timestamp }
-    if (result && result.length > 0) {
-        const userId = result[0].value;
-        console.log(`[Waitlist] Popped user ${userId} from event ${eventId} waitlist`);
-        return userId;
+    const booking = await Booking.findOne({ eventId, status: 'waitlisted' }).sort({ createdAt: 1 });
+    if (booking) {
+        console.log(`[Waitlist] Popped user ${booking.userId} from event ${eventId} waitlist`);
+        return booking.userId.toString();
     }
     return null;
 };

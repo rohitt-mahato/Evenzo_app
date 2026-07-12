@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>User Registration - GoPlan</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-background": "#181c1e",
+                        "on-secondary": "#ffffff",
+                        "inverse-on-surface": "#eef1f3",
+                        "on-primary-fixed-variant": "#414754",
+                        "on-primary": "#ffffff",
+                        "on-surface": "#181c1e",
+                        "surface-bright": "#f7fafc",
+                        "on-secondary-container": "#586377",
+                        "surface-container-high": "#e5e9eb",
+                        "on-tertiary-fixed-variant": "#524531",
+                        "surface-tint": "#585e6c",
+                        "on-primary-container": "#828796",
+                        "inverse-surface": "#2d3133",
+                        "outline": "#76777c",
+                        "secondary-fixed": "#d8e3fa",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed": "#f5dfc4",
+                        "primary-fixed": "#dde2f3",
+                        "surface-container-low": "#f1f4f6",
+                        "on-secondary-fixed-variant": "#3c475a",
+                        "on-tertiary-container": "#96856d",
+                        "on-surface-variant": "#45474c",
+                        "error-container": "#ffdad6",
+                        "inverse-primary": "#c1c6d7",
+                        "tertiary": "#0e0700",
+                        "on-tertiary-fixed": "#241a09",
+                        "surface-variant": "#e0e3e5",
+                        "on-tertiary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed-dim": "#bcc7dd",
+                        "secondary": "#545f72",
+                        "surface-container": "#ebeef0",
+                        "on-primary-fixed": "#161c27",
+                        "primary-container": "#1a202c",
+                        "background": "#f7fafc",
+                        "surface": "#f7fafc",
+                        "on-secondary-fixed": "#111c2c",
+                        "tertiary-fixed-dim": "#d8c3a9",
+                        "surface-dim": "#d7dadc",
+                        "tertiary-container": "#291e0d",
+                        "primary-fixed-dim": "#c1c6d7",
+                        "outline-variant": "#c6c6cc",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-container": "#d5e0f7",
+                        "primary": "#030813",
+                        "surface-container-highest": "#e0e3e5"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sm": "8px",
+                        "xl": "40px",
+                        "container-max": "1280px",
+                        "xs": "4px",
+                        "md": "16px",
+                        "base": "4px",
+                        "lg": "24px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "display": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "body-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "display": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        input:focus {
+            border-color: #1a202c !important;
+            box-shadow: none !important;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex items-center justify-center p-md sm:p-lg antialiased">
+<!-- Registration Card -->
+<main class="w-full max-w-md bg-surface-container-lowest border border-surface-variant rounded-lg p-lg sm:p-xl flex flex-col gap-lg">
+<!-- Header -->
+<header class="flex flex-col items-center text-center gap-sm">
+<h1 class="font-headline-lg text-headline-lg md:font-headline-lg text-primary">GoPlan</h1>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Create your account</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Join the platform to discover and book events seamlessly.</p>
+</header>
+<!-- Form -->
+<form action="#" class="flex flex-col gap-md" id="registrationForm" method="POST">
+<!-- Full Name -->
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-label-md text-on-surface" for="fullName">Full Name</label>
+<input class="w-full h-10 px-md bg-surface border border-outline-variant rounded focus:outline-none focus:ring-0 font-body-sm text-body-sm text-on-surface placeholder:text-on-surface-variant" id="fullName" name="fullName" placeholder="Jane Doe" required="" type="text"/>
+</div>
+<!-- Email -->
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-label-md text-on-surface" for="email">Email Address</label>
+<input class="w-full h-10 px-md bg-surface border border-outline-variant rounded focus:outline-none focus:ring-0 font-body-sm text-body-sm text-on-surface placeholder:text-on-surface-variant" id="email" name="email" placeholder="jane@example.com" required="" type="email"/>
+</div>
+<!-- Phone Number (with simple country code dropdown simulation) -->
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-label-md text-on-surface" for="phone">Phone Number</label>
+<div class="flex border border-outline-variant rounded bg-surface focus-within:border-primary-container transition-colors">
+<select class="bg-transparent border-none focus:ring-0 text-on-surface font-body-sm text-body-sm py-0 pl-md pr-sm outline-none appearance-none cursor-pointer">
+<option value="+1">+1 (US)</option>
+<option value="+44">+44 (UK)</option>
+<option value="+61">+61 (AU)</option>
+</select>
+<div class="flex items-center text-on-surface-variant border-r border-outline-variant pr-xs">
+<span class="material-symbols-outlined text-[16px]">arrow_drop_down</span>
+</div>
+<input class="w-full h-10 px-sm bg-transparent border-none focus:outline-none focus:ring-0 font-body-sm text-body-sm text-on-surface placeholder:text-on-surface-variant" id="phone" name="phone" placeholder="555 123 4567" required="" type="tel"/>
+</div>
+</div>
+<!-- Password -->
+<div class="flex flex-col gap-xs relative">
+<label class="font-label-md text-label-md text-on-surface" for="password">Password</label>
+<input class="w-full h-10 px-md pr-10 bg-surface border border-outline-variant rounded focus:outline-none focus:ring-0 font-body-sm text-body-sm text-on-surface placeholder:text-on-surface-variant" id="password" name="password" placeholder="Create a password" required="" type="password"/>
+<button class="absolute right-3 top-[34px] text-on-surface-variant hover:text-on-surface focus:outline-none" id="togglePassword" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="visibility_off">visibility_off</span>
+</button>
+<!-- Strength Indicator -->
+<div class="flex flex-col gap-xs mt-1">
+<div class="flex gap-xs h-1">
+<div class="flex-1 bg-surface-container-highest rounded-sm" id="strength-1"></div>
+<div class="flex-1 bg-surface-container-highest rounded-sm" id="strength-2"></div>
+<div class="flex-1 bg-surface-container-highest rounded-sm" id="strength-3"></div>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant" id="strength-text">Password strength</span>
+</div>
+</div>
+<!-- Confirm Password -->
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-label-md text-on-surface" for="confirmPassword">Confirm Password</label>
+<input class="w-full h-10 px-md bg-surface border border-outline-variant rounded focus:outline-none focus:ring-0 font-body-sm text-body-sm text-on-surface placeholder:text-on-surface-variant" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required="" type="password"/>
+</div>
+<!-- Terms Checkbox -->
+<div class="flex items-start gap-sm mt-xs">
+<div class="flex items-center h-5">
+<input class="w-4 h-4 rounded-sm border-outline-variant text-primary-container focus:ring-0 cursor-pointer" id="terms" name="terms" required="" type="checkbox"/>
+</div>
+<label class="font-body-sm text-body-sm text-on-surface-variant cursor-pointer" for="terms">
+                    I agree to the <a class="text-primary hover:underline" href="#">Terms of Service</a> and <a class="text-primary hover:underline" href="#">Privacy Policy</a>.
+                </label>
+</div>
+<!-- Submit Button -->
+<button class="w-full h-12 mt-sm bg-primary-container text-on-primary font-label-md text-label-md rounded flex items-center justify-center transition-colors hover:bg-on-surface" type="submit">
+                Create Account
+            </button>
+</form>
+<!-- Divider -->
+<div class="flex items-center gap-sm">
+<div class="flex-1 h-px bg-outline-variant"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">or sign up with</span>
+<div class="flex-1 h-px bg-outline-variant"></div>
+</div>
+<!-- Social Auth -->
+<div class="flex flex-col sm:flex-row gap-md">
+<button class="flex-1 h-10 flex items-center justify-center gap-sm border border-outline-variant rounded bg-surface hover:bg-surface-container-low transition-colors text-on-surface font-label-md text-label-md">
+<svg class="w-5 h-5" fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
+<path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
+<path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"></path>
+<path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path>
+</svg>
+                Google
+            </button>
+<button class="flex-1 h-10 flex items-center justify-center gap-sm border border-outline-variant rounded bg-surface hover:bg-surface-container-low transition-colors text-on-surface font-label-md text-label-md">
+<svg class="w-5 h-5" fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M22.675 0h-21.35C.597 0 0 .597 0 1.325v21.351C0 23.403.597 24 1.325 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.73 0 1.323-.597 1.323-1.324V1.325C24 .597 23.403 0 22.675 0z" fill="#1877F2"></path>
+</svg>
+                Facebook
+            </button>
+</div>
+<!-- Footer Link -->
+<div class="text-center mt-xs">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Already have an account? </span>
+<a class="font-label-md text-label-md text-primary hover:underline" href="#">Sign in</a>
+</div>
+</main>
+<!-- Lightweight Password Strength Logic -->
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const passwordInput = document.getElementById('password');
+            const togglePasswordBtn = document.getElementById('togglePassword');
+            const toggleIcon = togglePasswordBtn.querySelector('.material-symbols-outlined');
+            
+            const strength1 = document.getElementById('strength-1');
+            const strength2 = document.getElementById('strength-2');
+            const strength3 = document.getElementById('strength-3');
+            const strengthText = document.getElementById('strength-text');
+
+            // Toggle Password Visibility
+            togglePasswordBtn.addEventListener('click', () => {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                toggleIcon.textContent = type === 'password' ? 'visibility_off' : 'visibility';
+                toggleIcon.setAttribute('data-icon', type === 'password' ? 'visibility_off' : 'visibility');
+            });
+
+            // Simple Password Strength Simulation
+            passwordInput.addEventListener('input', (e) => {
+                const val = e.target.value;
+                let strength = 0;
+                
+                if (val.length > 0) strength++;
+                if (val.length >= 8) strength++;
+                if (/[A-Z]/.test(val) && /[0-9]/.test(val)) strength++;
+
+                // Reset colors
+                strength1.className = 'flex-1 rounded-sm transition-colors duration-300 bg-surface-container-highest';
+                strength2.className = 'flex-1 rounded-sm transition-colors duration-300 bg-surface-container-highest';
+                strength3.className = 'flex-1 rounded-sm transition-colors duration-300 bg-surface-container-highest';
+                strengthText.textContent = 'Password strength';
+                strengthText.className = 'font-label-sm text-label-sm text-on-surface-variant';
+
+                if (strength === 1) {
+                    strength1.classList.replace('bg-surface-container-highest', 'bg-error');
+                    strengthText.textContent = 'Weak';
+                    strengthText.classList.replace('text-on-surface-variant', 'text-error');
+                } else if (strength === 2) {
+                    strength1.classList.replace('bg-surface-container-highest', 'bg-[#F6E05E]'); // Hardcoded yellow for minimal viable demo
+                    strength2.classList.replace('bg-surface-container-highest', 'bg-[#F6E05E]');
+                    strengthText.textContent = 'Medium';
+                    strengthText.classList.replace('text-on-surface-variant', 'text-[#D69E2E]');
+                } else if (strength >= 3) {
+                    strength1.classList.replace('bg-surface-container-highest', 'bg-[#48BB78]'); // Hardcoded green
+                    strength2.classList.replace('bg-surface-container-highest', 'bg-[#48BB78]');
+                    strength3.classList.replace('bg-surface-container-highest', 'bg-[#48BB78]');
+                    strengthText.textContent = 'Strong';
+                    strengthText.classList.replace('text-on-surface-variant', 'text-[#38A169]');
+                }
+            });
+        });
+    </script>
+</body></html>

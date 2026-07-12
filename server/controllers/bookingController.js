@@ -139,10 +139,10 @@ exports.confirmBooking = async (req, res) => {
             pdfBuffer
         );
 
-        // Emit booking:confirmed to admin room
+        // Emit booking:confirmed to admin room and user room
         try {
             const io = getIO();
-            io.to('admin').emit('booking:confirmed', {
+            const payload = {
                 bookingId: booking._id.toString(),
                 eventId: booking.eventId._id.toString(),
                 eventTitle: booking.eventId.title,
@@ -150,7 +150,9 @@ exports.confirmBooking = async (req, res) => {
                 userEmail: booking.userId.email,
                 confirmedAt: new Date().toISOString(),
                 message: `Booking confirmed for ${booking.userId.name}`
-            });
+            };
+            io.to('admin').emit('booking:confirmed', payload);
+            io.to(`user:${booking.userId._id}`).emit('booking:confirmed', payload);
         } catch (socketErr) {
             console.error('[Booking] Socket emit error:', socketErr.message);
         }

@@ -5,10 +5,11 @@ import { useNavigate } from 'react-router-dom';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell, CartesianGrid } from 'recharts';
 
 const AdminDashboard = () => {
-    const { user } = useContext(AuthContext);
+    const { user, logout } = useContext(AuthContext);
     const navigate = useNavigate();
     const [events, setEvents] = useState([]);
     const [bookings, setBookings] = useState([]);
+    const [usersList, setUsersList] = useState([]);
     const [analytics, setAnalytics] = useState({
         revenue: [],
         peakHours: [],
@@ -16,6 +17,7 @@ const AdminDashboard = () => {
         cancellations: { cancellationRate: 0 }
     });
     const [loading, setLoading] = useState(true);
+    const [activeTab, setActiveTab] = useState('dashboard'); // dashboard, events, bookings
 
     const [showEventForm, setShowEventForm] = useState(false);
     const [formData, setFormData] = useState({
@@ -32,16 +34,18 @@ const AdminDashboard = () => {
 
     const fetchData = async () => {
         try {
-            const [eventsRes, bookingsRes, revRes, peakRes, catRes, cancRes] = await Promise.all([
+            const [eventsRes, bookingsRes, revRes, peakRes, catRes, cancRes, usersRes] = await Promise.all([
                 api.get('/events'),
                 api.get('/bookings/my'),
                 api.get('/analytics/revenue'),
                 api.get('/analytics/peak-hours'),
                 api.get('/analytics/categories'),
-                api.get('/analytics/cancellations')
+                api.get('/analytics/cancellations'),
+                api.get('/users/all')
             ]);
             setEvents(eventsRes.data);
             setBookings(bookingsRes.data);
+            setUsersList(usersRes.data);
             setAnalytics({
                 revenue: revRes.data,
                 peakHours: peakRes.data,
@@ -98,236 +102,442 @@ const AdminDashboard = () => {
         }
     };
 
-    if (loading) return <div className="text-center py-20 text-xl font-semibold">Loading admin panel...</div>;
+    const handleDeleteUser = async (id) => {
+        if (window.confirm('Are you sure you want to delete this user?')) {
+            try {
+                await api.delete(`/users/${id}`);
+                fetchData();
+            } catch (error) {
+                alert(error.response?.data?.message || 'Error deleting user');
+            }
+        }
+    };
+
+    const handleLogout = () => {
+        logout();
+        navigate('/login');
+    };
+
+    if (loading) return <div className="text-center py-20 font-body-lg text-body-lg text-on-surface-variant h-screen flex items-center justify-center">Loading admin panel...</div>;
+
+    const totalRevenue = bookings.reduce((sum, b) => b.paymentStatus === 'paid' && b.status === 'confirmed' ? sum + b.amount : sum, 0);
+    const paidClientsCount = new Set(bookings.filter(b => b.paymentStatus === 'paid' && b.status === 'confirmed').map(b => b.userId?._id)).size;
+    const pendingBookings = bookings.filter(b => b.status === 'pending');
 
     return (
-        <div className="max-w-7xl mx-auto">
-            <div className="bg-black text-white rounded-2xl p-6 sm:p-8 mb-8 shadow-lg flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
-                <div>
-                    <h1 className="text-2xl sm:text-3xl font-extrabold mb-2">Admin Dashboard</h1>
-                    <p className="text-gray-300">Manage events and manually confirm bookings.</p>
+        <div className="flex h-[calc(100vh-0px)] overflow-hidden w-full bg-background text-on-background">
+            {/* SideNavBar */}
+            <nav className="hidden md:flex flex-col h-screen w-64 fixed left-0 top-0 z-40 p-md bg-surface-container-lowest border-r border-outline-variant">
+                <div className="mb-lg px-sm">
+                    <h1 className="font-headline-sm text-headline-sm font-bold text-primary">Admin Panel</h1>
+                    <p className="font-body-sm text-body-sm text-on-surface-variant">Evenzo Management</p>
                 </div>
-                <button
-                    onClick={() => setShowEventForm(!showEventForm)}
-                    className="w-full md:w-auto bg-white text-black font-bold py-3 px-6 rounded-lg hover:bg-gray-100 transition shadow-md"
-                >
-                    {showEventForm ? 'Cancel Creation' : '+ Create New Event'}
-                </button>
-            </div>
-
-            {/* Admin Stats Row */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between">
-                    <div>
-                        <p className="text-gray-500 text-sm font-bold uppercase tracking-wider mb-1">Total Revenue</p>
-                        <h3 className="text-3xl font-black text-green-600">₹{bookings.reduce((sum, b) => b.paymentStatus === 'paid' && b.status === 'confirmed' ? sum + b.amount : sum, 0)}</h3>
-                    </div>
-                    <div className="w-12 h-12 bg-green-100 text-green-500 rounded-full flex items-center justify-center text-xl font-bold">₹</div>
-                </div>
-                <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between">
-                    <div>
-                        <p className="text-gray-500 text-sm font-bold uppercase tracking-wider mb-1">Paid Clients</p>
-                        <h3 className="text-3xl font-black text-blue-600">{new Set(bookings.filter(b => b.paymentStatus === 'paid' && b.status === 'confirmed').map(b => b.userId?._id)).size}</h3>
-                    </div>
-                    <div className="w-12 h-12 bg-blue-100 text-blue-500 rounded-full flex items-center justify-center text-xl font-bold">👤</div>
-                </div>
-                <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between">
-                    <div>
-                        <p className="text-gray-500 text-sm font-bold uppercase tracking-wider mb-1">Pending Requests</p>
-                        <h3 className="text-3xl font-black text-yellow-600">{bookings.filter(b => b.status === 'pending').length}</h3>
-                    </div>
-                    <div className="w-12 h-12 bg-yellow-100 text-yellow-600 rounded-full flex items-center justify-center text-xl font-bold">⏳</div>
-                </div>
-            </div>
-
-            {/* Analytics Charts */}
-            <div className="mb-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-2xl font-bold text-gray-800">Analytics Overview</h2>
-                    <div className="text-sm font-semibold bg-red-50 text-red-600 px-3 py-1 rounded-full border border-red-100">
-                        Cancellation Rate: {analytics.cancellations.cancellationRate.toFixed(1)}%
-                    </div>
-                </div>
-                
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    {/* Revenue Bar Chart */}
-                    <div className="h-72">
-                        <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-4 text-center">Revenue Over Time (₹)</h3>
-                        {analytics.revenue.length > 0 ? (
-                            <ResponsiveContainer width="100%" height="100%">
-                                <BarChart data={analytics.revenue}>
-                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eee" />
-                                    <XAxis dataKey="_id" tick={{fontSize: 12}} />
-                                    <YAxis tick={{fontSize: 12}} />
-                                    <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} cursor={{fill: '#f8fafc'}} />
-                                    <Bar dataKey="totalRevenue" fill="#22c55e" radius={[4, 4, 0, 0]} />
-                                </BarChart>
-                            </ResponsiveContainer>
-                        ) : (
-                            <div className="h-full flex items-center justify-center text-gray-400">No revenue data yet.</div>
-                        )}
-                    </div>
-
-                    {/* Peak Hours Line Chart */}
-                    <div className="h-72">
-                        <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-4 text-center">Peak Booking Hours</h3>
-                        {analytics.peakHours.length > 0 ? (
-                            <ResponsiveContainer width="100%" height="100%">
-                                <LineChart data={analytics.peakHours}>
-                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eee" />
-                                    <XAxis dataKey="hour" tick={{fontSize: 12}} />
-                                    <YAxis tick={{fontSize: 12}} />
-                                    <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
-                                    <Line type="monotone" dataKey="count" stroke="#6366f1" strokeWidth={3} dot={{r: 4}} activeDot={{r: 6}} />
-                                </LineChart>
-                            </ResponsiveContainer>
-                        ) : (
-                            <div className="h-full flex items-center justify-center text-gray-400">No booking time data yet.</div>
-                        )}
-                    </div>
-
-                    {/* Category Pie Chart */}
-                    <div className="h-72 lg:col-span-2 flex flex-col items-center">
-                        <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-4 text-center">Bookings by Category</h3>
-                        {analytics.categories.length > 0 ? (
-                            <div className="h-full w-full max-w-md">
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <PieChart>
-                                        <Pie 
-                                            data={analytics.categories} 
-                                            dataKey="count" 
-                                            nameKey="category" 
-                                            cx="50%" 
-                                            cy="50%" 
-                                            outerRadius={80} 
-                                            label={({category, percent}) => `${category} (${(percent * 100).toFixed(0)}%)`}
-                                        >
-                                            {analytics.categories.map((entry, index) => (
-                                                <Cell key={`cell-${index}`} fill={['#3b82f6', '#ec4899', '#f59e0b', '#10b981', '#8b5cf6'][index % 5]} />
-                                            ))}
-                                        </Pie>
-                                        <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
-                                    </PieChart>
-                                </ResponsiveContainer>
-                            </div>
-                        ) : (
-                            <div className="h-full flex items-center justify-center text-gray-400">No category data yet.</div>
-                        )}
-                    </div>
-                </div>
-            </div>
-
-            {showEventForm && (
-                <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 mb-8 animation-slideDown">
-                    <h2 className="text-2xl font-bold mb-6 text-gray-800">Create New Event</h2>
-                    <form onSubmit={handleCreateEvent} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <input required type="text" placeholder="Event Title" className="border px-4 py-3 rounded-lg focus:ring-2 focus:ring-gray-700 outline-none transition" value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} />
-                        <input required type="text" placeholder="Category (e.g., Tech, Music)" className="border px-4 py-3 rounded-lg focus:ring-2 focus:ring-gray-700 outline-none transition" value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value })} />
-                        <input required type="date" className="border px-4 py-3 rounded-lg focus:ring-2 focus:ring-gray-700 outline-none transition" value={formData.date} onChange={e => setFormData({ ...formData, date: e.target.value })} />
-                        <input required type="text" placeholder="Location" className="border px-4 py-3 rounded-lg focus:ring-2 focus:ring-gray-700 outline-none transition" value={formData.location} onChange={e => setFormData({ ...formData, location: e.target.value })} />
-                        <input required type="number" placeholder="Total Seats" className="border px-4 py-3 rounded-lg focus:ring-2 focus:ring-gray-700 outline-none transition" value={formData.totalSeats} onChange={e => setFormData({ ...formData, totalSeats: e.target.value })} />
-                        <input required type="number" placeholder="Ticket Price (0 for free)" className="border px-4 py-3 rounded-lg focus:ring-2 focus:ring-gray-700 outline-none transition" value={formData.ticketPrice} onChange={e => setFormData({ ...formData, ticketPrice: e.target.value })} />
-
-                        <div className="md:col-span-2">
-                            <input type="text" placeholder="Image URL (Provide any direct link to an image)" className="w-full border px-4 py-3 rounded-lg focus:ring-2 focus:ring-gray-700 outline-none transition" value={formData.image} onChange={e => setFormData({ ...formData, image: e.target.value })} />
+                <ul className="flex-1 space-y-2">
+                    <li>
+                        <button onClick={() => setActiveTab('dashboard')} className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg font-bold font-label-md text-label-md transition-all duration-150 ease-in-out ${activeTab === 'dashboard' ? 'bg-primary text-on-primary' : 'text-on-surface-variant hover:bg-surface-container-low'}`}>
+                            <span className="material-symbols-outlined text-[20px]">dashboard</span>
+                            Dashboard
+                        </button>
+                    </li>
+                    <li>
+                        <button onClick={() => setActiveTab('events')} className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg font-bold font-label-md text-label-md transition-all duration-150 ease-in-out ${activeTab === 'events' ? 'bg-primary text-on-primary' : 'text-on-surface-variant hover:bg-surface-container-low'}`}>
+                            <span className="material-symbols-outlined text-[20px]">event</span>
+                            Events
+                        </button>
+                    </li>
+                    <li>
+                        <button onClick={() => setActiveTab('users')} className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg font-bold font-label-md text-label-md transition-all duration-150 ease-in-out ${activeTab === 'users' ? 'bg-primary text-on-primary' : 'text-on-surface-variant hover:bg-surface-container-low'}`}>
+                            <span className="material-symbols-outlined text-[20px]">people</span>
+                            Users
+                        </button>
+                    </li>
+                    <li>
+                        <button onClick={() => setActiveTab('bookings')} className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg font-bold font-label-md text-label-md transition-all duration-150 ease-in-out ${activeTab === 'bookings' ? 'bg-primary text-on-primary' : 'text-on-surface-variant hover:bg-surface-container-low'}`}>
+                            <span className="material-symbols-outlined text-[20px]">confirmation_number</span>
+                            Bookings
+                            {pendingBookings.length > 0 && (
+                                <span className="ml-auto bg-error text-on-error px-1.5 py-0.5 rounded-sm text-[10px]">{pendingBookings.length}</span>
+                            )}
+                        </button>
+                    </li>
+                </ul>
+                <div className="mt-auto pt-md border-t border-outline-variant flex flex-col gap-sm">
+                    <div className="flex items-center gap-3 px-3">
+                        <div className="w-8 h-8 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-bold">
+                            {user.name?.charAt(0) || 'A'}
                         </div>
-
-                        <textarea required placeholder="Event Description" className="border px-4 py-3 rounded-lg md:col-span-2 h-32 focus:ring-2 focus:ring-gray-700 outline-none transition" value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} />
-                        <button type="submit" className="md:col-span-2 bg-gray-900 text-white font-bold py-3 mt-2 rounded-lg hover:bg-black transition shadow-md">Publish Event</button>
-                    </form>
-                </div>
-            )}
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* Events Section */}
-                <div className="flex flex-col">
-                    <h2 className="text-2xl font-bold mb-6 text-gray-800 flex items-center gap-3">
-                        <span className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 text-gray-600 text-sm">{events.length}</span>
-                        All Events
-                    </h2>
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                        <ul className="divide-y divide-gray-100 max-h-[600px] overflow-y-auto">
-                            {events.length === 0 ? <li className="p-6 text-gray-500 text-center">No events created yet.</li> :
-                                events.map(event => (
-                                    <li key={event._id} className="p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:bg-gray-50 transition border-b border-gray-100 last:border-0">
-                                        <div>
-                                            <h4 className="font-bold text-gray-900 mb-1 leading-tight">{event.title}</h4>
-                                            <div className="flex flex-wrap items-center gap-3 text-sm text-gray-500">
-                                                <span className="flex items-center gap-1 font-medium"><div className="w-2 h-2 rounded-full bg-blue-500"></div> {new Date(event.date).toLocaleDateString()}</span>
-                                                <span className="flex items-center gap-1 font-medium"><div className={`w-2 h-2 rounded-full ${event.availableSeats > 0 ? 'bg-green-500' : 'bg-red-500'}`}></div> {event.availableSeats}/{event.totalSeats} seats</span>
-                                            </div>
-                                        </div>
-                                        <button onClick={() => handleDeleteEvent(event._id)} className="w-full sm:w-auto text-red-500 hover:text-white hover:bg-red-500 border border-red-200 px-4 py-2 rounded-lg text-sm font-bold transition shadow-sm shrink-0">
-                                            Delete
-                                        </button>
-                                    </li>
-                                ))
-                            }
-                        </ul>
+                        <div>
+                            <p className="font-label-md text-label-md font-bold text-on-surface line-clamp-1">{user.name}</p>
+                            <p className="font-label-sm text-label-sm text-on-surface-variant">System Admin</p>
+                        </div>
                     </div>
+                    <button onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-error hover:bg-error-container hover:text-on-error-container transition-all duration-150 ease-in-out font-label-md text-label-md">
+                        <span className="material-symbols-outlined text-[20px]">logout</span>
+                        Sign out
+                    </button>
                 </div>
+            </nav>
 
-                {/* Bookings Section */}
-                <div className="flex flex-col">
-                    <h2 className="text-2xl font-bold mb-6 text-gray-800 flex items-center gap-3">
-                        <span className="flex items-center justify-center w-8 h-8 rounded-full bg-yellow-100 text-yellow-700 text-sm font-bold">{bookings.length}</span>
-                        Booking Requests
-                    </h2>
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                        <ul className="divide-y divide-gray-100 max-h-[600px] overflow-y-auto">
-                            {bookings.length === 0 ? <li className="p-6 text-gray-500 text-center">No bookings yet.</li> :
-                                bookings.map(booking => (
-                                    <li key={booking._id} className={`p-6 hover:bg-gray-50 transition border-l-4 ${booking.status === 'pending' ? 'border-l-yellow-400' : booking.status === 'confirmed' ? 'border-l-green-400' : 'border-l-red-400'}`}>
-                                        <div className="flex justify-between items-start mb-3">
-                                            <h4 className="font-bold text-gray-900 text-lg leading-tight">{booking.eventId?.title || 'Deleted Event'}</h4>
-                                            <div className="flex flex-col gap-1 items-end shrink-0 ml-4">
-                                                <span className={`px-2 py-1 text-[10px] font-black rounded uppercase tracking-wider ${booking.status === 'confirmed' ? 'bg-green-100 text-green-700' : booking.status === 'cancelled' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'}`}>{booking.status}</span>
-                                                {booking.status !== 'cancelled' && <span className={`px-2 py-1 text-[10px] font-black rounded uppercase tracking-wider ${booking.paymentStatus === 'paid' ? 'bg-indigo-100 text-indigo-700' : 'bg-gray-200 text-gray-800'}`}>{booking.paymentStatus.replace('_', ' ')}</span>}
-                                            </div>
+            {/* Main Content Area */}
+            <main className="flex-1 ml-0 md:ml-64 flex flex-col h-screen overflow-y-auto w-full">
+                {/* TopAppBar */}
+                <header className="sticky top-0 z-30 bg-surface-container-lowest border-b border-outline-variant px-lg py-md flex justify-between items-center w-full">
+                    <div className="flex items-center gap-4">
+                        <button className="md:hidden text-on-surface">
+                            <span className="material-symbols-outlined">menu</span>
+                        </button>
+                        <h2 className="font-headline-md text-headline-md text-primary md:hidden">Admin</h2>
+                        <div className="hidden md:flex items-center gap-2">
+                            <span className="bg-surface-container px-2 py-1 rounded-sm font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Live Environment</span>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-4">
+                        <button onClick={() => navigate('/')} className="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md flex items-center gap-1">
+                            <span className="material-symbols-outlined text-[18px]">open_in_new</span> Go to Site
+                        </button>
+                    </div>
+                </header>
+
+                <div className="p-lg md:p-xl space-y-lg max-w-container-max mx-auto w-full pb-20">
+                    
+                    {activeTab === 'dashboard' && (
+                        <>
+                            <div className="flex justify-between items-end mb-md">
+                                <div>
+                                    <h2 className="font-headline-lg text-headline-lg text-primary">Overview</h2>
+                                    <p className="font-body-md text-body-md text-on-surface-variant mt-1">Real-time metrics for today.</p>
+                                </div>
+                                <div className="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+                                    <span className="w-2 h-2 rounded-full bg-[#10B981]"></span>
+                                    Last updated: Just now
+                                </div>
+                            </div>
+
+                            {/* KPI Bento Grid */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-md">
+                                <div className="bg-surface-container-lowest p-md rounded-lg border border-outline-variant flex flex-col justify-between h-32 relative overflow-hidden">
+                                    <div className="flex justify-between items-start">
+                                        <span className="font-label-md text-label-md text-on-surface-variant">Total Revenue</span>
+                                        <span className="material-symbols-outlined text-on-surface-variant">payments</span>
+                                    </div>
+                                    <div>
+                                        <div className="font-headline-md text-headline-md text-primary">₹{totalRevenue.toLocaleString()}</div>
+                                        <div className="font-label-sm text-label-sm text-[#10B981] flex items-center mt-1">Confirmed</div>
+                                    </div>
+                                </div>
+                                <div className="bg-surface-container-lowest p-md rounded-lg border border-outline-variant flex flex-col justify-between h-32 relative overflow-hidden">
+                                    <div className="flex justify-between items-start">
+                                        <span className="font-label-md text-label-md text-on-surface-variant">Paid Clients</span>
+                                        <span className="material-symbols-outlined text-on-surface-variant">group</span>
+                                    </div>
+                                    <div>
+                                        <div className="font-headline-md text-headline-md text-primary">{paidClientsCount}</div>
+                                        <div className="font-label-sm text-label-sm text-on-surface-variant mt-1 flex items-center gap-1">Unique users</div>
+                                    </div>
+                                </div>
+                                <div className="bg-surface-container-lowest p-md rounded-lg border border-outline-variant flex flex-col justify-between h-32 relative overflow-hidden">
+                                    <div className="flex justify-between items-start">
+                                        <span className="font-label-md text-label-md text-on-surface-variant">Active Events</span>
+                                        <span className="material-symbols-outlined text-on-surface-variant">event</span>
+                                    </div>
+                                    <div>
+                                        <div className="font-headline-md text-headline-md text-primary">{events.length}</div>
+                                        <div className="font-label-sm text-label-sm text-on-surface-variant mt-1">Published events</div>
+                                    </div>
+                                </div>
+                                <div className="bg-surface-container-lowest p-md rounded-lg border border-outline-variant flex flex-col justify-between h-32 relative overflow-hidden">
+                                    <div className="flex justify-between items-start">
+                                        <span className="font-label-md text-label-md text-on-surface-variant">Pending Bookings</span>
+                                        <span className="material-symbols-outlined text-on-surface-variant">hourglass_empty</span>
+                                    </div>
+                                    <div>
+                                        <div className="font-headline-md text-headline-md text-primary">{pendingBookings.length}</div>
+                                        <div className="font-label-sm text-label-sm text-error mt-1 flex items-center gap-1">Requires approval</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Main Data Section */}
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-lg mt-lg">
+                                {/* Revenue Chart */}
+                                <div className="bg-surface-container-lowest p-md rounded-lg border border-outline-variant flex flex-col h-[350px]">
+                                    <div className="flex justify-between items-center mb-md">
+                                        <h3 className="font-headline-sm text-headline-sm text-primary">Revenue Trend (₹)</h3>
+                                    </div>
+                                    <div className="flex-1 w-full text-body-sm font-body-sm">
+                                        {analytics.revenue.length > 0 ? (
+                                            <ResponsiveContainer width="100%" height="100%">
+                                                <BarChart data={analytics.revenue}>
+                                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                                                    <XAxis dataKey="_id" tick={{fill: '#76777c'}} axisLine={{stroke: '#e2e8f0'}} tickLine={false} />
+                                                    <YAxis tick={{fill: '#76777c'}} axisLine={false} tickLine={false} />
+                                                    <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: 'none', backgroundColor: '#1e293b', color: '#fff' }} cursor={{fill: 'rgba(255,255,255,0.1)'}} />
+                                                    <Bar dataKey="totalRevenue" fill="#6366f1" radius={[4, 4, 0, 0]} />
+                                                </BarChart>
+                                            </ResponsiveContainer>
+                                        ) : (
+                                            <div className="h-full flex items-center justify-center text-on-surface-variant">No revenue data yet.</div>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* Categories Pie Chart */}
+                                <div className="bg-surface-container-lowest p-md rounded-lg border border-outline-variant flex flex-col h-[350px]">
+                                    <div className="flex justify-between items-center mb-md">
+                                        <h3 className="font-headline-sm text-headline-sm text-primary">Bookings by Category</h3>
+                                    </div>
+                                    <div className="flex-1 w-full">
+                                        {analytics.categories.length > 0 ? (
+                                            <ResponsiveContainer width="100%" height="100%">
+                                                <PieChart>
+                                                    <Pie data={analytics.categories} dataKey="count" nameKey="category" cx="50%" cy="50%" innerRadius={60} outerRadius={80} paddingAngle={5} label={({category, percent}) => `${category} (${(percent * 100).toFixed(0)}%)`}>
+                                                        {analytics.categories.map((entry, index) => (
+                                                            <Cell key={`cell-${index}`} fill={['#6366f1', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6'][index % 5]} />
+                                                        ))}
+                                                    </Pie>
+                                                    <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: 'none', backgroundColor: '#1e293b', color: '#fff' }} />
+                                                </PieChart>
+                                            </ResponsiveContainer>
+                                        ) : (
+                                            <div className="h-full flex items-center justify-center text-on-surface-variant">No category data yet.</div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </>
+                    )}
+
+                    {activeTab === 'events' && (
+                        <>
+                            <div className="flex justify-between items-end mb-md">
+                                <div>
+                                    <h2 className="font-headline-lg text-headline-lg text-primary">Manage Events</h2>
+                                    <p className="font-body-md text-body-md text-on-surface-variant mt-1">Create and manage your events.</p>
+                                </div>
+                                <button onClick={() => setShowEventForm(!showEventForm)} className="bg-primary-container text-on-primary font-label-md text-label-md px-md py-sm rounded-DEFAULT hover:bg-on-surface transition-colors flex items-center gap-2">
+                                    <span className="material-symbols-outlined text-[18px]">{showEventForm ? 'close' : 'add'}</span>
+                                    {showEventForm ? 'Cancel' : 'New Event'}
+                                </button>
+                            </div>
+
+                            {showEventForm && (
+                                <div className="bg-surface-container-lowest p-lg rounded-lg border border-outline-variant mb-lg animate-in fade-in slide-in-from-top-4">
+                                    <h3 className="font-headline-sm text-headline-sm text-primary mb-md">Event Details</h3>
+                                    <form onSubmit={handleCreateEvent} className="grid grid-cols-1 md:grid-cols-2 gap-md">
+                                        <div className="flex flex-col gap-xs">
+                                            <label className="font-label-sm text-label-sm text-on-surface">Title</label>
+                                            <input required type="text" className="w-full bg-surface border border-outline-variant rounded px-sm py-2 font-body-sm focus:outline-none focus:border-primary-container" value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} />
                                         </div>
-                                        <div className="bg-gray-50 rounded-lg p-3 mb-3 border border-gray-100 text-sm">
-                                            <p className="text-gray-700 flex items-center gap-2 mb-1">
-                                                <span className="font-bold w-16 text-gray-500 uppercase text-xs">User:</span>
-                                                <span className="font-semibold">{booking.userId?.name}</span>
-                                                <span className="text-gray-400">({booking.userId?.email})</span>
-                                            </p>
-                                            <p className="text-gray-700 flex items-center gap-2 mb-1">
-                                                <span className="font-bold w-16 text-gray-500 uppercase text-xs">Amount:</span>
-                                                <span className={`font-semibold ${booking.amount === 0 ? 'text-green-600' : ''}`}>{booking.amount === 0 ? 'Free' : `₹${booking.amount}`}</span>
-                                            </p>
-                                            <p className="text-gray-700 flex items-center gap-2 mb-1">
-                                                <span className="font-bold w-16 text-gray-500 uppercase text-xs">Date:</span>
-                                                <span>{new Date(booking.bookedAt).toLocaleString()}</span>
-                                            </p>
-                                            {booking.eventId && (
-                                                <p className="text-gray-700 flex items-center gap-2 mt-2 pt-2 border-t border-gray-200">
-                                                    <span className="font-bold w-16 text-gray-500 uppercase text-xs">Seats:</span>
-                                                    <span className={`font-bold ${booking.eventId.availableSeats > 0 ? 'text-green-600' : 'text-red-500'}`}>{booking.eventId.availableSeats}</span> remaining of {booking.eventId.totalSeats}
-                                                </p>
+                                        <div className="flex flex-col gap-xs">
+                                            <label className="font-label-sm text-label-sm text-on-surface">Category</label>
+                                            <input required type="text" className="w-full bg-surface border border-outline-variant rounded px-sm py-2 font-body-sm focus:outline-none focus:border-primary-container" value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value })} />
+                                        </div>
+                                        <div className="flex flex-col gap-xs">
+                                            <label className="font-label-sm text-label-sm text-on-surface">Date</label>
+                                            <input required type="date" className="w-full bg-surface border border-outline-variant rounded px-sm py-2 font-body-sm focus:outline-none focus:border-primary-container" value={formData.date} onChange={e => setFormData({ ...formData, date: e.target.value })} />
+                                        </div>
+                                        <div className="flex flex-col gap-xs">
+                                            <label className="font-label-sm text-label-sm text-on-surface">Location</label>
+                                            <input required type="text" className="w-full bg-surface border border-outline-variant rounded px-sm py-2 font-body-sm focus:outline-none focus:border-primary-container" value={formData.location} onChange={e => setFormData({ ...formData, location: e.target.value })} />
+                                        </div>
+                                        <div className="flex flex-col gap-xs">
+                                            <label className="font-label-sm text-label-sm text-on-surface">Total Seats</label>
+                                            <input required type="number" className="w-full bg-surface border border-outline-variant rounded px-sm py-2 font-body-sm focus:outline-none focus:border-primary-container" value={formData.totalSeats} onChange={e => setFormData({ ...formData, totalSeats: e.target.value })} />
+                                        </div>
+                                        <div className="flex flex-col gap-xs">
+                                            <label className="font-label-sm text-label-sm text-on-surface">Ticket Price (₹)</label>
+                                            <input required type="number" className="w-full bg-surface border border-outline-variant rounded px-sm py-2 font-body-sm focus:outline-none focus:border-primary-container" value={formData.ticketPrice} onChange={e => setFormData({ ...formData, ticketPrice: e.target.value })} />
+                                        </div>
+                                        <div className="md:col-span-2 flex flex-col gap-xs">
+                                            <label className="font-label-sm text-label-sm text-on-surface">Image URL</label>
+                                            <input type="text" className="w-full bg-surface border border-outline-variant rounded px-sm py-2 font-body-sm focus:outline-none focus:border-primary-container" value={formData.image} onChange={e => setFormData({ ...formData, image: e.target.value })} />
+                                        </div>
+                                        <div className="md:col-span-2 flex flex-col gap-xs">
+                                            <label className="font-label-sm text-label-sm text-on-surface">Description</label>
+                                            <textarea required rows="4" className="w-full bg-surface border border-outline-variant rounded px-sm py-2 font-body-sm focus:outline-none focus:border-primary-container resize-none" value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })}></textarea>
+                                        </div>
+                                        <button type="submit" className="md:col-span-2 bg-primary-container text-on-primary font-label-md text-label-md py-sm rounded-DEFAULT hover:bg-on-surface transition-colors mt-2">Publish Event</button>
+                                    </form>
+                                </div>
+                            )}
+
+                            {/* Data Table */}
+                            <div className="bg-surface-container-lowest rounded-lg border border-outline-variant overflow-hidden">
+                                <div className="overflow-x-auto w-full">
+                                    <table className="w-full text-left border-collapse">
+                                        <thead>
+                                            <tr className="bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm border-b border-outline-variant">
+                                                <th className="p-4 font-semibold">Event Details</th>
+                                                <th className="p-4 font-semibold">Category</th>
+                                                <th className="p-4 font-semibold text-right">Seats</th>
+                                                <th className="p-4 font-semibold text-right">Price</th>
+                                                <th className="p-4 font-semibold text-right">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="font-body-sm text-body-sm">
+                                            {events.length === 0 ? (
+                                                <tr><td colSpan="5" className="p-8 text-center text-on-surface-variant">No events found.</td></tr>
+                                            ) : events.map(event => (
+                                                <tr key={event._id} className="border-b border-outline-variant hover:bg-surface-bright transition-colors group">
+                                                    <td className="p-4">
+                                                        <div className="font-medium text-on-surface group-hover:text-primary transition-colors">{event.title}</div>
+                                                        <div className="text-on-surface-variant text-[12px] mt-0.5">{new Date(event.date).toLocaleDateString()} • {event.location}</div>
+                                                    </td>
+                                                    <td className="p-4">
+                                                        <span className="bg-surface-container text-on-surface px-2 py-0.5 rounded-sm text-[11px] font-bold tracking-wide uppercase">{event.category || 'Event'}</span>
+                                                    </td>
+                                                    <td className="p-4 text-right">
+                                                        <span className={event.availableSeats === 0 ? 'text-error font-bold' : ''}>{event.availableSeats} / {event.totalSeats}</span>
+                                                    </td>
+                                                    <td className="p-4 text-right font-medium">
+                                                        {event.ticketPrice === 0 ? 'Free' : `₹${event.ticketPrice}`}
+                                                    </td>
+                                                    <td className="p-4 text-right">
+                                                        <button onClick={() => handleDeleteEvent(event._id)} className="text-error hover:bg-error-container p-1 rounded transition-colors" title="Delete">
+                                                            <span className="material-symbols-outlined text-[20px]">delete</span>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </>
+                    )}
+
+                    {activeTab === 'bookings' && (
+                        <>
+                            <div className="flex justify-between items-end mb-md">
+                                <div>
+                                    <h2 className="font-headline-lg text-headline-lg text-primary">Booking Approvals</h2>
+                                    <p className="font-body-md text-body-md text-on-surface-variant mt-1">Review and manage incoming booking requests.</p>
+                                </div>
+                                <div className="bg-surface-container px-3 py-1 rounded-sm font-label-sm text-label-sm text-on-surface-variant">
+                                    {pendingBookings.length} Pending
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-md">
+                                {bookings.length === 0 ? (
+                                    <div className="col-span-full p-8 text-center text-on-surface-variant bg-surface-container-lowest rounded-lg border border-outline-variant">No bookings yet.</div>
+                                ) : bookings.map(booking => {
+                                    const isPending = booking.status === 'pending';
+                                    const isConfirmed = booking.status === 'confirmed';
+                                    const statusColor = isConfirmed ? 'text-[#10B981] bg-[#DEF7EC]' : booking.status === 'cancelled' ? 'text-error bg-error-container' : 'text-[#D69E2E] bg-[#FEF3C7]';
+                                    
+                                    return (
+                                        <div key={booking._id} className="bg-surface-container-lowest p-md rounded-lg border border-outline-variant flex flex-col gap-sm">
+                                            <div className="flex justify-between items-start border-b border-outline-variant pb-sm">
+                                                <div>
+                                                    <h3 className="font-headline-sm text-headline-sm text-on-surface line-clamp-1">{booking.eventId?.title || 'Deleted Event'}</h3>
+                                                    <p className="font-label-sm text-label-sm text-on-surface-variant mt-0.5">{new Date(booking.bookedAt).toLocaleString()}</p>
+                                                </div>
+                                                <span className={`px-2 py-0.5 rounded-sm text-[11px] font-bold tracking-wide uppercase shrink-0 ml-2 ${statusColor}`}>
+                                                    {booking.status}
+                                                </span>
+                                            </div>
+                                            
+                                            <div className="flex flex-col gap-xs font-body-sm text-body-sm">
+                                                <div className="flex justify-between">
+                                                    <span className="text-on-surface-variant">User:</span>
+                                                    <span className="font-medium text-on-surface">{booking.userId?.name}</span>
+                                                </div>
+                                                <div className="flex justify-between">
+                                                    <span className="text-on-surface-variant">Email:</span>
+                                                    <span className="font-medium text-on-surface truncate ml-2">{booking.userId?.email}</span>
+                                                </div>
+                                                <div className="flex justify-between">
+                                                    <span className="text-on-surface-variant">Amount:</span>
+                                                    <span className="font-medium text-on-surface">{booking.amount === 0 ? 'Free' : `₹${booking.amount}`}</span>
+                                                </div>
+                                                <div className="flex justify-between">
+                                                    <span className="text-on-surface-variant">Payment:</span>
+                                                    <span className="font-medium text-on-surface">{booking.paymentStatus.replace('_', ' ')}</span>
+                                                </div>
+                                            </div>
+
+                                            {isPending && (
+                                                <div className="mt-auto pt-sm flex gap-2 border-t border-outline-variant">
+                                                    <button onClick={() => handleConfirmBooking(booking._id, 'paid')} className="flex-1 bg-[#10B981] text-white hover:bg-[#059669] font-label-sm text-label-sm py-1.5 rounded-sm transition-colors text-center" title="Approve as Paid">
+                                                        Approve Paid
+                                                    </button>
+                                                    <button onClick={() => handleConfirmBooking(booking._id, 'not_paid')} className="flex-1 bg-surface-container-high text-on-surface hover:bg-outline-variant font-label-sm text-label-sm py-1.5 rounded-sm transition-colors text-center" title="Approve Undecided">
+                                                        Approve
+                                                    </button>
+                                                    <button onClick={() => handleCancelBooking(booking._id)} className="w-10 bg-error-container text-error hover:bg-error hover:text-white font-label-sm text-label-sm py-1.5 rounded-sm transition-colors flex items-center justify-center">
+                                                        <span className="material-symbols-outlined text-[16px]">close</span>
+                                                    </button>
+                                                </div>
                                             )}
                                         </div>
+                                    );
+                                })}
+                            </div>
+                        </>
+                    )}
 
-                                        {/* Action buttons for admin */}
-                                        {booking.status === 'pending' && (
-                                            <div className="flex flex-wrap gap-2 mt-2">
-                                                <button onClick={() => handleConfirmBooking(booking._id, 'paid')} className="flex-1 min-w-[120px] bg-green-50 text-green-700 hover:bg-green-600 hover:text-white border border-green-200 text-xs font-bold py-2.5 px-3 rounded-lg shadow-sm transition">
-                                                    ✓ Approve as Paid
-                                                </button>
-                                                <button onClick={() => handleConfirmBooking(booking._id, 'not_paid')} className="flex-1 min-w-[120px] bg-gray-50 text-gray-700 hover:bg-gray-800 hover:text-white border border-gray-200 text-xs font-bold py-2.5 px-3 rounded-lg shadow-sm transition">
-                                                    ✓ Approve Undecided
-                                                </button>
-                                                <button onClick={() => handleCancelBooking(booking._id)} className="w-[80px] bg-red-50 text-red-600 hover:bg-red-500 hover:text-white border border-red-200 text-xs font-bold py-2.5 px-3 rounded-lg transition">
-                                                    ✕ Reject
-                                                </button>
-                                            </div>
-                                        )}
-                                    </li>
-                                ))
-                            }
-                        </ul>
-                    </div>
+                    {activeTab === 'users' && (
+                        <>
+                            <div className="flex justify-between items-end mb-md">
+                                <div>
+                                    <h2 className="font-headline-lg text-headline-lg text-primary">Manage Users</h2>
+                                    <p className="font-body-md text-body-md text-on-surface-variant mt-1">Review registered users and their status.</p>
+                                </div>
+                                <div className="bg-surface-container px-3 py-1 rounded-sm font-label-sm text-label-sm text-on-surface-variant">
+                                    {usersList.length} Total Users
+                                </div>
+                            </div>
+                            <div className="bg-surface-container-lowest rounded-lg border border-outline-variant overflow-hidden">
+                                <div className="overflow-x-auto w-full">
+                                    <table className="w-full text-left border-collapse">
+                                        <thead>
+                                            <tr className="bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm border-b border-outline-variant">
+                                                <th className="p-4 font-semibold">User</th>
+                                                <th className="p-4 font-semibold">Email</th>
+                                                <th className="p-4 font-semibold">Role</th>
+                                                <th className="p-4 font-semibold">Status</th>
+                                                <th className="p-4 font-semibold text-right">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="font-body-sm text-body-sm">
+                                            {usersList.length === 0 ? (
+                                                <tr><td colSpan="5" className="p-8 text-center text-on-surface-variant">No users found.</td></tr>
+                                            ) : usersList.map(u => (
+                                                <tr key={u._id} className="border-b border-outline-variant hover:bg-surface-bright transition-colors group">
+                                                    <td className="p-4">
+                                                        <div className="font-medium text-on-surface flex items-center gap-2">
+                                                            <div className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center font-bold text-xs shrink-0 overflow-hidden">
+                                                                {u.profilePicture ? <img src={u.profilePicture} alt="Avatar" className="w-full h-full object-cover" /> : u.name?.charAt(0)}
+                                                            </div>
+                                                            {u.name}
+                                                        </div>
+                                                    </td>
+                                                    <td className="p-4">{u.email}</td>
+                                                    <td className="p-4">
+                                                        <span className="bg-surface-container text-on-surface px-2 py-0.5 rounded-sm text-[11px] font-bold tracking-wide uppercase">{u.role}</span>
+                                                    </td>
+                                                    <td className="p-4">
+                                                        {u.isVerified ? <span className="text-[#10B981] font-medium">Verified</span> : <span className="text-[#D69E2E] font-medium">Unverified</span>}
+                                                    </td>
+                                                    <td className="p-4 text-right">
+                                                        {u.role !== 'admin' && (
+                                                            <button onClick={() => handleDeleteUser(u._id)} className="text-error hover:bg-error-container p-1 rounded transition-colors" title="Delete">
+                                                                <span className="material-symbols-outlined text-[20px]">delete</span>
+                                                            </button>
+                                                        )}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </>
+                    )}
+
                 </div>
-            </div>
+            </main>
         </div>
     );
 };

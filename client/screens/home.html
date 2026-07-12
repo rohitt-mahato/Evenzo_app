@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GoPlan - Find your next unforgettable experience</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-background": "#181c1e",
+                        "on-secondary": "#ffffff",
+                        "inverse-on-surface": "#eef1f3",
+                        "on-primary-fixed-variant": "#414754",
+                        "on-primary": "#ffffff",
+                        "on-surface": "#181c1e",
+                        "surface-bright": "#f7fafc",
+                        "on-secondary-container": "#586377",
+                        "surface-container-high": "#e5e9eb",
+                        "on-tertiary-fixed-variant": "#524531",
+                        "surface-tint": "#585e6c",
+                        "on-primary-container": "#828796",
+                        "inverse-surface": "#2d3133",
+                        "outline": "#76777c",
+                        "secondary-fixed": "#d8e3fa",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed": "#f5dfc4",
+                        "primary-fixed": "#dde2f3",
+                        "surface-container-low": "#f1f4f6",
+                        "on-secondary-fixed-variant": "#3c475a",
+                        "on-tertiary-container": "#96856d",
+                        "on-surface-variant": "#45474c",
+                        "error-container": "#ffdad6",
+                        "inverse-primary": "#c1c6d7",
+                        "tertiary": "#0e0700",
+                        "on-tertiary-fixed": "#241a09",
+                        "surface-variant": "#e0e3e5",
+                        "on-tertiary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed-dim": "#bcc7dd",
+                        "secondary": "#545f72",
+                        "surface-container": "#ebeef0",
+                        "on-primary-fixed": "#161c27",
+                        "primary-container": "#1a202c",
+                        "background": "#f7fafc",
+                        "surface": "#f7fafc",
+                        "on-secondary-fixed": "#111c2c",
+                        "tertiary-fixed-dim": "#d8c3a9",
+                        "surface-dim": "#d7dadc",
+                        "tertiary-container": "#291e0d",
+                        "primary-fixed-dim": "#c1c6d7",
+                        "outline-variant": "#c6c6cc",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-container": "#d5e0f7",
+                        "primary": "#030813",
+                        "surface-container-highest": "#e0e3e5"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sm": "8px",
+                        "xl": "40px",
+                        "container-max": "1280px",
+                        "xs": "4px",
+                        "md": "16px",
+                        "base": "4px",
+                        "lg": "24px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "display": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "body-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "display": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: theme('colors.background'); color: theme('colors.on-background'); }
+        /* Flat UI Customizations */
+        .flat-border { border: 1px solid theme('colors.outline-variant'); }
+        .flat-border-subtle { border: 0.5px solid theme('colors.outline-variant'); }
+        .focus-ring:focus-within { border-color: theme('colors.primary-container'); outline: none; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased">
+<!-- TopNavBar Component -->
+<nav class="bg-surface-container-lowest border-b border-outline-variant sticky top-0 z-50 flex justify-between items-center px-lg py-md w-full max-w-container-max mx-auto transition-colors duration-200 ease-in-out">
+<div class="flex items-center gap-lg">
+<a class="font-headline-md text-headline-md font-bold text-primary" href="#">GoPlan</a>
+<div class="hidden md:flex gap-md">
+<a class="text-primary border-b-2 border-primary pb-1 font-label-md text-label-md hover:bg-surface-container-low hover:text-primary transition-colors duration-200 ease-in-out" href="#">Browse</a>
+<a class="text-on-surface-variant font-label-md text-label-md hover:bg-surface-container-low hover:text-primary transition-colors duration-200 ease-in-out" href="#">My Tickets</a>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button aria-label="notifications" class="text-on-surface-variant hover:bg-surface-container-low p-sm rounded-DEFAULT transition-colors duration-200 ease-in-out">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="font-label-md text-label-md text-primary hover:bg-surface-container-low px-md py-sm rounded-DEFAULT transition-colors duration-200 ease-in-out border border-transparent hover:border-outline-variant">Sign In</button>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-grow w-full max-w-container-max mx-auto px-lg md:px-gutter py-xl flex flex-col gap-xl">
+<!-- Hero Section -->
+<section class="flex flex-col gap-lg items-center text-center max-w-3xl mx-auto pt-xl">
+<h1 class="font-display text-display text-primary">Find your next unforgettable experience</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Discover thousands of live events, concerts, workshops, and more tailored to your interests.</p>
+<!-- Search Bar -->
+<div class="w-full bg-surface-container-lowest flat-border rounded-lg flex flex-col md:flex-row p-xs focus-ring">
+<div class="flex-grow flex items-center px-md py-sm border-b md:border-b-0 md:border-r border-outline-variant gap-sm">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="search">search</span>
+<input class="w-full bg-transparent border-none focus:ring-0 font-body-md text-body-md text-on-surface placeholder-on-primary-container p-0" placeholder="Search events, artists, or venues" type="text"/>
+</div>
+<div class="flex items-center px-md py-sm md:w-48 gap-sm">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="location_on">location_on</span>
+<select class="w-full bg-transparent border-none focus:ring-0 font-body-md text-body-md text-on-surface cursor-pointer p-0">
+<option>New York, NY</option>
+<option>London, UK</option>
+<option>Tokyo, JP</option>
+<option>Anywhere</option>
+</select>
+</div>
+<button class="bg-primary-container text-on-primary font-label-md text-label-md px-lg py-sm rounded-DEFAULT hover:bg-primary transition-colors mt-sm md:mt-0 md:ml-xs">Search</button>
+</div>
+<!-- Category Pills -->
+<div class="flex flex-wrap justify-center gap-sm mt-md w-full">
+<button class="bg-surface-container-high text-on-surface font-label-sm text-label-sm px-md py-sm rounded-full hover:bg-outline-variant transition-colors">All</button>
+<button class="bg-surface-container-lowest flat-border text-on-surface font-label-sm text-label-sm px-md py-sm rounded-full hover:bg-surface-container-low transition-colors">Music</button>
+<button class="bg-surface-container-lowest flat-border text-on-surface font-label-sm text-label-sm px-md py-sm rounded-full hover:bg-surface-container-low transition-colors">Tech</button>
+<button class="bg-surface-container-lowest flat-border text-on-surface font-label-sm text-label-sm px-md py-sm rounded-full hover:bg-surface-container-low transition-colors">Sports</button>
+<button class="bg-surface-container-lowest flat-border text-on-surface font-label-sm text-label-sm px-md py-sm rounded-full hover:bg-surface-container-low transition-colors">Art</button>
+<button class="bg-surface-container-lowest flat-border text-on-surface font-label-sm text-label-sm px-md py-sm rounded-full hover:bg-surface-container-low transition-colors">Food</button>
+<button class="bg-surface-container-lowest flat-border text-on-surface font-label-sm text-label-sm px-md py-sm rounded-full hover:bg-surface-container-low transition-colors">Comedy</button>
+</div>
+</section>
+<!-- Stats Row -->
+<section class="flex flex-row justify-center gap-xl py-lg border-y border-outline-variant">
+<div class="text-center">
+<p class="font-headline-md text-headline-md text-primary">10k+</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Live Events</p>
+</div>
+<div class="text-center">
+<p class="font-headline-md text-headline-md text-primary">1M+</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Attendees</p>
+</div>
+<div class="text-center">
+<p class="font-headline-md text-headline-md text-primary">500+</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Venues</p>
+</div>
+</section>
+<!-- Featured Events (Horizontal Scroll) -->
+<section class="flex flex-col gap-md w-full">
+<div class="flex justify-between items-end">
+<h2 class="font-headline-lg md:font-headline-lg text-headline-lg md:text-headline-lg text-primary">Featured Events</h2>
+<a class="font-label-md text-label-md text-primary hover:underline" href="#">View all</a>
+</div>
+<div class="flex overflow-x-auto pb-md gap-md snap-x snap-mandatory hide-scrollbar">
+<!-- Card 1 -->
+<div class="min-w-[300px] w-[300px] md:min-w-[400px] md:w-[400px] bg-surface-container-lowest flat-border-subtle rounded-DEFAULT snap-start flex flex-col group cursor-pointer hover:border-outline transition-colors">
+<div class="h-48 w-full bg-surface-container-high rounded-t-DEFAULT overflow-hidden relative">
+<img alt="Concert Event" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="A vibrant live music concert scene with dramatic stage lighting cutting through fog. The crowd is shown in silhouette against a brilliant deep blue and white light wash. The aesthetic is energetic, modern, and high-contrast, fitting a flat minimalist UI by using stark bright lights against dark shadows." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6WhA6iOMShiVS6smVZghDvU3kMEs2Sbmo9hMx23yfHYrxudc3E5iZOrqAPSuKKjBDoCX2qNMOg-iCsOnBPCN4z3-a5TNYYhIPGghucDl_mvDSk4W3Rd215muXbVArGcO9jhh0K0rqTr64Fa3b9jrSEOECbBdFQP2aKcuODWfTMoil0AjEmdC60KHFZdMSnrkLAhoiEJZ_G6I9Div6jQuS_7QixFcxgjbmj06Mq0UEr8F1OHsItEv9awiCTKuEMHbUOcIhTR7Wy6wi"/>
+<span class="absolute top-sm left-sm bg-surface-container-lowest text-on-surface font-label-sm text-label-sm px-sm py-xs rounded-sm">Music</span>
+</div>
+<div class="p-md flex flex-col gap-xs flex-grow">
+<p class="font-label-md text-label-md text-primary uppercase">Oct 15 • 8:00 PM</p>
+<h3 class="font-headline-sm text-headline-sm text-primary line-clamp-1">Neon Nights Festival</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-xs"><span class="material-symbols-outlined text-[16px]" data-icon="location_on">location_on</span> Brooklyn Steel, NY</p>
+<div class="mt-auto pt-sm flex justify-between items-center border-t border-outline-variant border-dashed">
+<span class="font-label-md text-label-md text-primary">From $45</span>
+<div class="flex items-center gap-xs">
+<div class="w-2 h-2 rounded-full bg-error" title="Low availability"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Few seats</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="min-w-[300px] w-[300px] md:min-w-[400px] md:w-[400px] bg-surface-container-lowest flat-border-subtle rounded-DEFAULT snap-start flex flex-col group cursor-pointer hover:border-outline transition-colors">
+<div class="h-48 w-full bg-surface-container-high rounded-t-DEFAULT overflow-hidden relative">
+<div class="w-full h-full bg-gradient-to-br from-secondary-fixed to-surface-variant" data-alt="Placeholder abstract gradient background representing a technology conference. Soft blue and grey hues blending smoothly in a clean, professional, flat minimalist style to match the UI."></div>
+<span class="absolute top-sm left-sm bg-surface-container-lowest text-on-surface font-label-sm text-label-sm px-sm py-xs rounded-sm">Tech</span>
+</div>
+<div class="p-md flex flex-col gap-xs flex-grow">
+<p class="font-label-md text-label-md text-primary uppercase">Nov 02 • 9:00 AM</p>
+<h3 class="font-headline-sm text-headline-sm text-primary line-clamp-1">Future Web Summit 2024</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-xs"><span class="material-symbols-outlined text-[16px]" data-icon="location_on">location_on</span> Moscone Center, SF</p>
+<div class="mt-auto pt-sm flex justify-between items-center border-t border-outline-variant border-dashed">
+<span class="font-label-md text-label-md text-primary">From $299</span>
+<div class="flex items-center gap-xs">
+<div class="w-2 h-2 rounded-full bg-[#10b981]" title="Good availability"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Available</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer Component -->
+<footer class="bg-surface-container-lowest border-t border-outline-variant w-full py-xl px-lg mt-xl flex flex-col md:flex-row justify-between items-center max-w-container-max mx-auto transition-all duration-200">
+<div class="flex flex-col gap-xs items-center md:items-start mb-md md:mb-0">
+<span class="font-headline-sm text-headline-sm font-bold text-primary">GoPlan</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">© 2024 GoPlan Platform. All rights reserved.</span>
+</div>
+<div class="flex flex-wrap justify-center gap-md">
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary underline transition-all duration-200" href="#">Terms of Service</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary underline transition-all duration-200" href="#">Privacy Policy</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary underline transition-all duration-200" href="#">Contact Support</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary underline transition-all duration-200" href="#">Help Center</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary underline transition-all duration-200" href="#">Career</a>
+</div>
+</footer>
+<style>
+        /* Utility to hide scrollbar for horizontal scroll area but keep functionality */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</body></html>

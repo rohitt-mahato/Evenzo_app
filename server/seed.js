@@ -80,6 +80,36 @@ const events = [
         totalSeats: 100,
         ticketPrice: 600,
         image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800'
+    },
+    {
+        title: 'Bollywood Night Gala',
+        description: 'An evening of non-stop Bollywood hits, featuring live performances from top artists and a premium dining experience.',
+        date: new Date(Date.now() + 8 * 24 * 60 * 60 * 1000), // 8 days from now
+        location: 'Mumbai, India',
+        category: 'Music',
+        totalSeats: 800,
+        ticketPrice: 2000,
+        image: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&q=80&w=800'
+    },
+    {
+        title: 'International Tech Expo India',
+        description: 'Join the biggest tech gathering in the subcontinent. Network with startups, investors, and tech giants from around the globe.',
+        date: new Date(Date.now() + 25 * 24 * 60 * 60 * 1000), // 25 days from now
+        location: 'Bangalore, India',
+        category: 'Technology',
+        totalSeats: 1500,
+        ticketPrice: 500,
+        image: 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?auto=format&fit=crop&q=80&w=800'
+    },
+    {
+        title: 'Street Food Festival',
+        description: 'Experience the authentic taste of Indian street food. Over 100 stalls featuring culinary delights from every state.',
+        date: new Date(Date.now() + 18 * 24 * 60 * 60 * 1000), // 18 days from now
+        location: 'Delhi, India',
+        category: 'Food',
+        totalSeats: 2000,
+        ticketPrice: 150,
+        image: 'https://images.unsplash.com/photo-1543362906-acfc16c67564?auto=format&fit=crop&q=80&w=800'
     }
 ];
 
