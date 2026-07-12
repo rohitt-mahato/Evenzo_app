@@ -10,6 +10,8 @@
   [![Made with Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)]()
   [![Made with Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white)]()
 
+  <h3>🌐 Live Demo: <a href="https://evenzo-app.vercel.app" target="_blank">evenzo-app.vercel.app</a></h3>
+
 </div>
 
 <h2 align="center">🎟️ Beyond a Standard CRUD App</h2>
