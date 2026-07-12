@@ -129,7 +129,7 @@ const UserDashboard = () => {
                                     <div className="p-lg flex flex-col gap-md w-full">
                                         {booking.eventId ? (
                                             <>
-                                                <div className="flex justify-between items-start w-full">
+                                                <div className="flex flex-col sm:flex-row justify-between items-start w-full gap-sm sm:gap-0">
                                                     <div className="flex flex-col gap-xs">
                                                         <span className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">
                                                             {new Date(booking.eventId.date).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })} • 
@@ -145,13 +145,13 @@ const UserDashboard = () => {
                                                             <span className="font-body-sm text-body-sm">{booking.amount === 0 ? 'Free' : `₹${booking.amount}`} • {booking.paymentStatus.replace('_', ' ')}</span>
                                                         </div>
                                                     </div>
-                                                    <div className="flex flex-col items-end gap-sm shrink-0 ml-4">
+                                                    <div className="flex flex-col items-start sm:items-end gap-sm shrink-0 sm:ml-4">
                                                         <span className={`font-label-sm text-label-sm px-sm py-xs rounded-sm uppercase tracking-wider ${statusColor}`}>
                                                             {booking.status}
                                                         </span>
                                                     </div>
                                                 </div>
-                                                <div className="flex items-center gap-md mt-sm border-t border-outline-variant pt-md">
+                                                <div className="flex flex-wrap items-center gap-md mt-sm border-t border-outline-variant pt-md">
                                                     <Link to={`/events/${booking.eventId._id}`} className="font-label-md text-label-md bg-surface-container-lowest text-on-surface border border-outline-variant px-md py-sm rounded-DEFAULT hover:bg-surface-container-low transition-colors">View Event</Link>
                                                     <Link to={`/ticket/${booking._id}`} className="font-label-md text-label-md bg-primary-container text-on-primary px-md py-sm rounded-DEFAULT hover:opacity-90 transition-opacity">View Ticket</Link>
                                                     {!isCancelled && (

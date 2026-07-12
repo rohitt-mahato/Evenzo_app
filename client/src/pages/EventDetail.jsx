@@ -110,7 +110,7 @@ const EventDetail = () => {
                             <span className="inline-block bg-surface-container-lowest text-on-surface px-3 py-1 rounded-DEFAULT font-label-sm text-label-sm mb-sm uppercase tracking-wider">
                                 {event.category}
                             </span>
-                            <h1 className="font-display text-display md:text-display text-on-primary mb-sm">{event.title}</h1>
+                            <h1 className="font-display text-[2.25rem] leading-[1.1] md:text-display text-on-primary mb-sm">{event.title}</h1>
                             <div className="flex flex-wrap items-center gap-sm font-body-md text-body-md opacity-90">
                                 <div className="flex items-center gap-xs">
                                     <span className="material-symbols-outlined text-[20px]">calendar_month</span>

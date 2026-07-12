@@ -79,7 +79,7 @@ const Home = () => {
     };
 
     return (
-        <div className="min-h-screen flex flex-col antialiased bg-background text-on-background">
+        <div className="min-h-screen flex flex-col antialiased bg-background text-on-background overflow-x-hidden">
             {/* TopNavBar Component is assumed to be in App.jsx or we can include it here, but let's keep it here for this specific landing page look if it's unique, or just rely on App.jsx. Assuming App.jsx has a nav, we might not need the nav here, but the Stitch design has a specific transparent/sticky nav. Let's include the main content. */}
             
             {/* Main Content Canvas */}
@@ -98,7 +98,7 @@ const Home = () => {
                         
                         {/* Left Side: Massive Typography & Subheadline */}
                         <div className="flex flex-col gap-md max-w-3xl text-white">
-                            <h1 className="font-display text-[4rem] leading-[1.05] md:text-[6rem] tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/70 opacity-0 animate-fade-up delay-100">
+                            <h1 className="font-display text-[2.25rem] leading-[1.1] sm:text-[3rem] md:text-[6rem] md:leading-[1.05] tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/70 opacity-0 animate-fade-up delay-100">
                                 Find your next<br/>unforgettable<br/>experience
                             </h1>
                             <p className="font-body-lg text-body-lg text-white/80 mt-sm max-w-lg opacity-0 animate-fade-up delay-300">
@@ -180,7 +180,7 @@ const Home = () => {
 
                 <div className="max-w-container-max mx-auto px-lg md:px-gutter w-full flex flex-col gap-xl">
                     {/* Stats Row */}
-                <section className="flex flex-row justify-center gap-xl py-lg border-y border-outline-variant">
+                <section className="flex flex-col sm:flex-row justify-center gap-lg sm:gap-xl py-lg border-y border-outline-variant">
                     <div className="text-center">
                         <p className="font-headline-md text-headline-md text-primary">10k+</p>
                         <p className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Live Events</p>

@@ -137,7 +137,7 @@ const Profile = () => {
                     </div>
 
                     {/* Profile Picture Section */}
-                    <div className="flex items-center gap-lg">
+                    <div className="flex flex-col sm:flex-row items-center sm:items-start gap-md sm:gap-lg text-center sm:text-left">
                         <div className="w-24 h-24 rounded-full bg-surface-container-highest overflow-hidden border border-outline-variant flex-shrink-0 flex items-center justify-center text-3xl font-bold text-on-surface-variant">
                             {user.profilePicture ? (
                                 <img src={user.profilePicture} alt="Profile" className="w-full h-full object-cover" />
@@ -146,7 +146,7 @@ const Profile = () => {
                             )}
                         </div>
                         <div className="flex flex-col gap-sm">
-                            <div className="flex gap-sm">
+                            <div className="flex justify-center sm:justify-start gap-sm">
                                 <label className="bg-surface hover:bg-surface-container-low text-on-surface border border-outline-variant px-md py-sm rounded font-label-md text-label-md transition-colors cursor-pointer text-center">
                                     Change Picture
                                     <input type="file" accept="image/*" className="hidden" onChange={handleFileChange} />

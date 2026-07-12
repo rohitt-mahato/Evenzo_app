@@ -18,6 +18,7 @@ const AdminDashboard = () => {
     });
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('dashboard'); // dashboard, events, bookings
+    const [sidebarOpen, setSidebarOpen] = useState(false);
 
     const [showEventForm, setShowEventForm] = useState(false);
     const [formData, setFormData] = useState({
@@ -126,33 +127,46 @@ const AdminDashboard = () => {
 
     return (
         <div className="flex h-[calc(100vh-0px)] overflow-hidden w-full bg-background text-on-background">
-            {/* SideNavBar */}
-            <nav className="hidden md:flex flex-col h-screen w-64 fixed left-0 top-0 z-40 p-md bg-surface-container-lowest border-r border-outline-variant">
-                <div className="mb-lg px-sm">
-                    <h1 className="font-headline-sm text-headline-sm font-bold text-primary">Admin Panel</h1>
-                    <p className="font-body-sm text-body-sm text-on-surface-variant">Evenzo Management</p>
+            {/* Mobile Sidebar Backdrop */}
+            {sidebarOpen && (
+                <div
+                    className="md:hidden fixed inset-0 bg-black/50 z-40 transition-opacity duration-300"
+                    onClick={() => setSidebarOpen(false)}
+                />
+            )}
+
+            {/* SideNavBar — desktop: always visible, mobile: slide-in drawer */}
+            <nav className={`flex flex-col h-screen w-64 fixed left-0 top-0 z-50 p-md bg-surface-container-lowest border-r border-outline-variant transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}>
+                <div className="mb-lg px-sm flex items-center justify-between">
+                    <div>
+                        <h1 className="font-headline-sm text-headline-sm font-bold text-primary">Admin Panel</h1>
+                        <p className="font-body-sm text-body-sm text-on-surface-variant">Evenzo Management</p>
+                    </div>
+                    <button className="md:hidden text-on-surface-variant hover:text-on-surface" onClick={() => setSidebarOpen(false)}>
+                        <span className="material-symbols-outlined">close</span>
+                    </button>
                 </div>
                 <ul className="flex-1 space-y-2">
                     <li>
-                        <button onClick={() => setActiveTab('dashboard')} className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg font-bold font-label-md text-label-md transition-all duration-150 ease-in-out ${activeTab === 'dashboard' ? 'bg-primary text-on-primary' : 'text-on-surface-variant hover:bg-surface-container-low'}`}>
+                        <button onClick={() => { setActiveTab('dashboard'); setSidebarOpen(false); }} className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg font-bold font-label-md text-label-md transition-all duration-150 ease-in-out ${activeTab === 'dashboard' ? 'bg-primary text-on-primary' : 'text-on-surface-variant hover:bg-surface-container-low'}`}>
                             <span className="material-symbols-outlined text-[20px]">dashboard</span>
                             Dashboard
                         </button>
                     </li>
                     <li>
-                        <button onClick={() => setActiveTab('events')} className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg font-bold font-label-md text-label-md transition-all duration-150 ease-in-out ${activeTab === 'events' ? 'bg-primary text-on-primary' : 'text-on-surface-variant hover:bg-surface-container-low'}`}>
+                        <button onClick={() => { setActiveTab('events'); setSidebarOpen(false); }} className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg font-bold font-label-md text-label-md transition-all duration-150 ease-in-out ${activeTab === 'events' ? 'bg-primary text-on-primary' : 'text-on-surface-variant hover:bg-surface-container-low'}`}>
                             <span className="material-symbols-outlined text-[20px]">event</span>
                             Events
                         </button>
                     </li>
                     <li>
-                        <button onClick={() => setActiveTab('users')} className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg font-bold font-label-md text-label-md transition-all duration-150 ease-in-out ${activeTab === 'users' ? 'bg-primary text-on-primary' : 'text-on-surface-variant hover:bg-surface-container-low'}`}>
+                        <button onClick={() => { setActiveTab('users'); setSidebarOpen(false); }} className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg font-bold font-label-md text-label-md transition-all duration-150 ease-in-out ${activeTab === 'users' ? 'bg-primary text-on-primary' : 'text-on-surface-variant hover:bg-surface-container-low'}`}>
                             <span className="material-symbols-outlined text-[20px]">people</span>
                             Users
                         </button>
                     </li>
                     <li>
-                        <button onClick={() => setActiveTab('bookings')} className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg font-bold font-label-md text-label-md transition-all duration-150 ease-in-out ${activeTab === 'bookings' ? 'bg-primary text-on-primary' : 'text-on-surface-variant hover:bg-surface-container-low'}`}>
+                        <button onClick={() => { setActiveTab('bookings'); setSidebarOpen(false); }} className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg font-bold font-label-md text-label-md transition-all duration-150 ease-in-out ${activeTab === 'bookings' ? 'bg-primary text-on-primary' : 'text-on-surface-variant hover:bg-surface-container-low'}`}>
                             <span className="material-symbols-outlined text-[20px]">confirmation_number</span>
                             Bookings
                             {pendingBookings.length > 0 && (
@@ -183,7 +197,7 @@ const AdminDashboard = () => {
                 {/* TopAppBar */}
                 <header className="sticky top-0 z-30 bg-surface-container-lowest border-b border-outline-variant px-lg py-md flex justify-between items-center w-full">
                     <div className="flex items-center gap-4">
-                        <button className="md:hidden text-on-surface">
+                        <button className="md:hidden text-on-surface" onClick={() => setSidebarOpen(true)}>
                             <span className="material-symbols-outlined">menu</span>
                         </button>
                         <h2 className="font-headline-md text-headline-md text-primary md:hidden">Admin</h2>
