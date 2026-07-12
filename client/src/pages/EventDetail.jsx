@@ -30,7 +30,7 @@ const EventDetail = () => {
         fetchEvent();
 
         // Setup Socket.IO connection for real-time seat updates
-        const socket = io('http://localhost:5000');
+        const socket = io('https://evenzo-app.onrender.com');
         socket.emit('join:event', id);
 
         socket.on('seat:locked', (data) => {
@@ -204,8 +204,8 @@ const EventDetail = () => {
                                 onClick={handleBooking}
                                 disabled={bookingLoading || (showOTP && !otp)}
                                 className={`w-full py-3 px-6 rounded-DEFAULT font-label-md text-label-md transition-colors ${(successMsg && !showOTP)
-                                        ? 'bg-surface-variant text-on-surface-variant cursor-not-allowed border border-outline-variant'
-                                        : 'bg-primary text-on-primary hover:bg-primary-container border border-primary text-center shadow-sm'
+                                    ? 'bg-surface-variant text-on-surface-variant cursor-not-allowed border border-outline-variant'
+                                    : 'bg-primary text-on-primary hover:bg-primary-container border border-primary text-center shadow-sm'
                                     }`}
                             >
                                 {bookingLoading ? 'Processing...' : (showOTP ? 'Verify OTP & Confirm' : (successMsg && !showOTP ? 'Request Sent' : (isSoldOut ? 'Join Waitlist' : 'Book Now')))}
