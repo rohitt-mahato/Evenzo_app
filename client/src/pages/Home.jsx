@@ -86,7 +86,7 @@ const Home = () => {
             <main className="flex-grow w-full flex flex-col gap-xl">
                 
                 {/* 100vh Hero Section */}
-                <section className="relative w-full h-screen min-h-[700px] flex items-end pb-xl px-lg md:px-gutter overflow-hidden">
+                <section className="relative w-full min-h-[100svh] flex flex-col pt-28 pb-xl px-lg md:px-gutter overflow-hidden">
                     {/* Animated Ken Burns Background */}
                     <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1470229722913-7c092bce36c2?auto=format&fit=crop&q=80&w=2000')] bg-cover bg-center animate-kenburns origin-center pointer-events-none"></div>
                     
@@ -94,7 +94,7 @@ const Home = () => {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent pointer-events-none z-0"></div>
                     <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-transparent pointer-events-none z-0"></div>
 
-                    <div className="relative z-10 w-full max-w-container-max mx-auto flex flex-col lg:flex-row justify-between items-end gap-xl pb-lg">
+                    <div className="relative z-10 w-full max-w-container-max mx-auto flex flex-col lg:flex-row justify-between items-start lg:items-end gap-xl mt-auto pb-lg">
                         
                         {/* Left Side: Massive Typography & Subheadline */}
                         <div className="flex flex-col gap-md max-w-3xl text-white">
