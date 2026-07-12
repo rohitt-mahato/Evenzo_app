@@ -22,7 +22,7 @@ const UserDashboard = () => {
         fetchRecommendations();
 
         // Socket connection for real-time updates
-        const socket = io('http://localhost:5000');
+        const socket = io('https://evenzo-app.onrender.com');
         socket.emit('join:user', user._id);
 
         socket.on('booking:confirmed', (data) => {
